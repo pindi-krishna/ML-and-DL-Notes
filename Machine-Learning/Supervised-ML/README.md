@@ -41,14 +41,16 @@ Then the output of all test points will be same as major class in the given data
 
 1.  The 1-NN could be an outlier of some another class. Then it miss-classifies the point. Therefore, its better not to choose. 
 1.  As $n\rightarrow \infty$, the 1-NN(1 Nearest Neighbor) classifier is only a factor 2 worse than the best possible classifier. 
-1.  Let $x_{NN}$ be the nearest neighbor of our test point $x_t$. As $n\rightarrow \infty$, dist($x_{NN}$,$x_{t}$)→0, i.e. $x_{NN}$ \rightarrow $x_t$. (This means the nearest neighbor is identical to $x_t$.) You return the label of $x_{NN}$. What is the probability that this is not the label of $x_t$? (This is the probability of drawing two different label of x). Solving this probability, we reach to the above conclusion. 
+
+1.  Let $x_{NN}$ be the nearest neighbor of our test point $x_t$. As $n\rightarrow \infty, 
+dist(x_{NN},x_{t}) \rightarrow 0, (i.e.) x_{NN} \rightarrow x_t$. (This means the nearest neighbor is identical to $x_t$.) You return the label of $x_{NN}$. What is the probability that this is not the label of $x_t$? (This is the probability of drawing two different label of x). Solving this probability, we reach to the above conclusion. 
 
 ### Curse of Dimensionality
 
 1.  As the dimension $d$ of the input increases, the distance between two points in the space also increases. 
 1.  So as $d >> 0$ almost the entire space is needed to find the 10-NN. 
 1.  This breaks down the k-NN assumptions, because the k-NN are not particularly closer (and therefore more similar) than any other data points in the training set. Why would the test point share the label with those k-nearest neighbors, if they are not actually similar to it?
-1.  Dont try to visualize the above point as it involves multiple dimensions greater than 3. Do the math.
+1.  Dont try to visualize the above point as it involves multiple dimensions greater than three. Do the math.
 1.  Note : In real life, points are not uniformly distributed. Points mostly lie on the complex manifolds and may form clusters. That's why KNN works sometime even for higher dimensions. 
 
 ### Pros and Cons
@@ -70,7 +72,7 @@ Note : No need to worry about the sorting here because as we compute distance, w
 
     1.  Split data recursively in half on exactly one feature.
     1.  Rotate through features.
-   ** 1.  When rotating through features, a good heuristic is to pick the feature with maximum variance.}
+        1.  When rotating through features, a good heuristic is to pick the feature with maximum variance.}
 
 Max height of the tree could be $log_2(n)$.
 
@@ -110,7 +112,7 @@ The ball structure allows us to partition the data along an underlying manifold 
 
 ### Locally sensitive hashing (LSH) 
     
-1.  Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes$(h_1, h_2, h_3, ........., h_k)$. 
+1.  Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes $(h_1, h_2, h_3, ........., h_k)$. 
 1.  Compare x to only those $\frac{n}{2^k}$ points in that particular region. 
 1.  Complexity : $O(Kd +  d\frac{n}{2^k})$. 
 
@@ -246,7 +248,7 @@ $$ h(x) = {\Sigma_{i=0}}^m \theta_i x_i = \theta^T x$$
 the training examples we have. Therefore, we try to minimize the loss function :
 $$J(\theta) = \frac{1}{2} {\sum_{i=0}}^m (h_\theta(x^i) - y^i)^2 $$
 
-**Note} : We can go for the different loss function, that is absolute loss(MAE), power 4 etc. 
+Note : We can go for the different loss function, that is absolute loss(MAE), power 4 etc. 
 MAE is not differentiable at 0. Power4 or any other even power function penalizes the outliers very much and also those turns out to be non-convex function. 
 
 ### Minimization of Loss Function

@@ -10,27 +10,33 @@
     1. Positional encoding component
     1. Encoder (Self-Atttention and Feed Forward)
     1. Decoder (Self-Attention, Encoder-Decoder Attention, Feed Forward)
-1. A simple tansformer with 2 encoders and 2 decoder can bee seen in image 
+1. A simple tansformer with 1 encoder and 1 decoder can bee seen in image 
 ![transformer](./Images/transformer-architecture.png)
 
 ## Encoder and Decoder
 ### Encoder
+
 1. The encoder is composed of a stack of N = 6 identical layers. Each layer has two sub-layers. 
-The first is a multi-head self-attention mechanism, and the second is a simple, position-wise fully connected feed-forward network. 
+    1. Multi-head self-attention mechanism, 
+    2. A simple, position-wise fully connected feed-forward network. 
 
-1. We employ a residual connection [11] around each of the two sub-layers, followed by layer normalization [1]. That is, the output of each sub-layer is LayerNorm(x + Sublayer(x)), where Sublayer(x) is the function implemented by the sub-layer itself. 
+1. A residual connection has been employed around each of the two sub-layers, followed by layer normalization. That is, the output of each sub-layer is LayerNorm(x + Sublayer(x)), where Sublayer(x) is the function implemented by the sub-layer itself. 
 
-1. To facilitate these residual connections, all sub-layers in the model, as well as the embedding layers, produce outputs of dimension dmodel = 512.
+1. To facilitate these residual connections, all sub-layers in the model, as well as the embedding layers, produce outputs of dimensions = 512.
+
+![Encoder](./Images/Encoder.png)
 
 ### Decoder
+
 1. The decoder is also composed of a stack of N = 6 identical layers. In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. 
 
-1. Similar to the encoder, we employ residual connections around each of the sub-layers, followed by layer normalization. We also modify the self-attention sub-layer in the decoder stack to prevent positions from attending to subsequent positions. **This masking, combined with fact that the output embeddings are offset by one position, ensures that the predictions for position i can depend only on the known outputs at positions less than i.**
+1. Similar to the encoder, residual connections has been employed around each of the sub-layers, followed by layer normalization. Also modified the self-attention sub-layer in the decoder stack to prevent positions from attending to subsequent positions. **This masking, combined with fact that the output embeddings are offset by one position, ensures that the predictions for position $i$ can depend only on the known outputs at positions less than $i$.** This is also called as Masked Self-Attention.
 
 ## Self-Attention
 
 ### Introduction
-1. Self-attention is a sequence-to-sequence operation: a sequence of vectors goes in, and a sequence of vectors comes out. Let’s call the input vectors $x_1$, $x_2$…...., $x_t$ and the corresponding output vectors $y_1$, $y_2$…...., $y_t$ The vectors all have dimension k.
+
+1. Self-attention is a sequence-to-sequence operation: a sequence of vectors goes in, and a sequence of vectors comes out. Let’s call the input vectors $x_1$, $x_2$…...., $x_t$ and the corresponding output vectors $y_1$, $y_2$…...., $y_t$. The vectors all have dimension k.
 
 1. We need to score each word of the input sentence against this word. The score determines how much focus to place on other parts of the input sentence as we encode a word at a certain position.
 
@@ -41,6 +47,7 @@ $$y_i = \sum_j w_{ij} x_j$$
     $$w′_{ij} = {x_i}^T x_j$$
 
 1.  Note that $x_i$ is the input vector at the same position as the current output vector $y_i$. For the next output vector, we get an entirely new series of dot products, and a different weighted sum.
+
 1.  The dot product gives us a value anywhere between negative and positive infinity, so we apply a softmax to map the values to [0,1] and to ensure that they sum to 1 over the whole sequence:
 
 $$ w_{ij}=\frac{exp w′_{ij}}{\sum_j exp w′_{ij}}$$
@@ -50,16 +57,15 @@ Look at figure
 
 ### Understanding why self-attention works
 
-1.  To build up some intuition, let’s look first at the standard approach to movie recommendation.
+1.  To build up some intuition, let’s first look at the standard approach to movie recommendation.
 
 1.  Let’s say you run a movie rental business and you have some movies, and some users, and you would like to recommend movies to your users that they are likely to enjoy.
 
 1.  One way to go about this, is to create manual features for your movies, such as how much romance there is in the movie, and how much action, and then to design corresponding features for your users: how much they enjoy romantic movies and how much they enjoy action-based movies. If you did this, the dot product between the two feature vectors would give you a score for how well the attributes of the movie match what the user enjoys.
 
-1.  If the signs of a feature match for the user and the movie then the resulting dot product gets a positive term for that feature. If the signs don’t match the corresponding term is negative.
+1. If the signs of a feature match for the user and the movie then the resulting dot product gets a positive term for that feature. If the signs don’t match the corresponding term is negative.
 
-1.  Furthermore, the magnitudes of the features indicate how much the feature should contribute to the total score.
-
+1. Furthermore, the magnitudes of the features indicate how much the feature should contribute to the total score.
 
 #### Example
 
@@ -79,7 +85,13 @@ where $y_{cat}$ is a weighted sum over all the embedding vectors in the first se
 
 1.  The first step in calculating self-attention is to create three vectors from each of the encoder’s input vectors (in this case, the embedding of each word). So for each word, we create a Query vector, a Key vector, and a Value vector. These vectors are created by multiplying the embedding by three matrices that we trained during the training process.
 
-1.  Notice that these new vectors are smaller in dimension than the embedding vector. Their dimensionality is 64, while the embedding and encoder input/output vectors have dimensionality of 512. They don’t HAVE to be smaller, this is an architecture choice to make the computation of multiheaded attention (mostly) constant.
+    1. Query: The query is a representation of the current word used to score against all the other words (using their keys). We only care about the query of the token we’re currently processing.
+
+    1. Key: Key vectors are like labels for all the words in the segment. They’re what we match against in our search for relevant words.
+
+    1. Value: Value vectors are actual word representations, once we’ve scored how relevant each word is, these are the values we add up to represent the current word.
+    
+1. Notice that these new vectors are smaller in dimension than the embedding vector. Their dimensionality is 64, while the embedding and encoder input/output vectors have dimensionality of 512. They don’t HAVE to be smaller, this is an architecture choice to make the computation of multiheaded attention (mostly) constant.
 
 
 ### Computing Self Attention
@@ -144,6 +156,21 @@ This improves the performance of the attention layer in two ways:
 1. They chose this function because they hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $P E_{pos+k}$ can be represented as a linear function of $PE_{pos}$.
 
 1. Sinusoidal version has been chosen because it may allow the model to extrapolate to sequence lengths longer than the ones encountered during training.
+
+# Final Architecture
+![Wholemodel](./Images/Transformer_whole.png)
+This is the final architecture. 
+
+1. The decoder stack outputs a vector of floats. The Linear layer is a simple fully connected neural network that projects the vector produced by the stack of decoders, into a much, much larger vector called a logits vector.
+
+1. Let’s assume that our model knows 10,000 unique English words (our model’s “output vocabulary”) that it’s learned from its training dataset. This would make the logits vector 10,000 cells wide – each cell corresponding to the score of a unique word. That is how we interpret the output of the model followed by the Linear layer.
+
+1. The softmax layer then turns those scores into probabilities (all positive, all add up to 1.0). The cell with the highest probability is chosen, and the word associated with it is produced as the output for this time step.
+
+**This is how the transformer model is used for neural machine translation task**. 
+
+# Applications 
+
 
 
 
