@@ -8,16 +8,19 @@ Artificial intelligence (AI) is wide-ranging branch of computer science concerne
 
 ## Machine Learning 
 
-1.   AI systems need the ability to acquire their own knowledge, by extracting patterns from raw data. This capability is known as machine learning.
+1. AI systems need the ability to acquire their own knowledge, by extracting patterns from raw data. This capability is known as machine learning.
+
 1.  What a typical “learning machine” does, is finding a mathematical formula, which, when applied to a collection of inputs (called “training data”), produces the desired outputs.
+
 1.  Machine learning can also be defined as the process of solving a practical problem by 
 
-1.  Gathering a dataset
-1.  Algorithmically building a statistical model based on that dataset.
+    1.  Gathering a dataset
+
+    1.  Algorithmically building a statistical model based on that dataset.
     
 ## Representation Learning 
 
-1. The performance of these simple machine learning algorithms depends heavily on the representation of the data they are given. Look at figure  \ref{fig:image_1}
+1. The performance of these simple machine learning algorithms depends heavily on the representation of the data they are given.
 
 1. Many artificial intelligence tasks can be solved by designing the right set of features to extract for that task, then providing these features to a simple machine
 learning algorithm.

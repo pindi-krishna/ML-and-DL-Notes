@@ -12,15 +12,15 @@ Similar Inputs have similar outputs which imply that data points of various clas
 
 For a test input x, assign the most common label amongst its k most similar training inputs.
 
-### What distance function should we use?
+### What distance function should we use to find neighbors?
 
 The k-nearest neighbor classifier fundamentally relies on a distance metric. The better that metric reflects label similarity, the better the classified will be. 
 
 1. Minkowski distance between two points $x$ and $x'$: $$D(x, x') = {(\sum_{i=1}^d {(x'_i - x_i)^p})}^\frac{1}{p}$$
 where '$d$ represents the number of dimensions. The most common choice is the 
-    1.  $p = 1$  manhattan distance 
-    1.  $p = 2$  Euclidean distance 
-    1.  $p = \infty$ Max distance(max of difference of coordinates in each dimension)
+    1.  $p = 1$  (Manhattan distance)
+    1.  $p = 2$  (Euclidean distance)
+    1.  $p = \infty$ (Max of difference between coordinates in each dimension)
 
 1. Cosine Similarity :
 $$Cosine Similarity(x, x') = \frac{x.x'}{|x||x'|}$$
@@ -51,7 +51,7 @@ dist(x_{NN},x_{t}) \rightarrow 0, (i.e.) x_{NN} \rightarrow x_t$. (This means th
 1.  So as $d >> 0$ almost the entire space is needed to find the 10-NN. 
 1.  This breaks down the k-NN assumptions, because the k-NN are not particularly closer (and therefore more similar) than any other data points in the training set. Why would the test point share the label with those k-nearest neighbors, if they are not actually similar to it?
 1.  Dont try to visualize the above point as it involves multiple dimensions greater than three. Do the math.
-1.  Note : In real life, points are not uniformly distributed. Points mostly lie on the complex manifolds and may form clusters. That's why KNN works sometime even for higher dimensions. 
+1.  Note : In real life, points are not uniformly distributed. Points mostly lie on the complex manifolds and may form clusters. That's why KNN may work sometimes even for higher dimensions. 
 
 ### Pros and Cons
 
@@ -59,27 +59,25 @@ Pros :
 1.  Easy and simple 
 1.  Non parametric 
 1.  No assumption about data. 
-1.  Only two choices(k values and distance metric).
+1.  Only two choices (k values and distance metric).
 
 Cons : 
 Computation time : O(N.d) where N -> #training samples and d -> #dimensions.
-
-Note : No need to worry about the sorting here because as we compute distance, we can sort then and there itself in linear time. 
 
 ### K Dimensional Tress (KD Trees)
 
 1.  Building KD trees. 
 
-    1.  Split data recursively in half on exactly one feature.
-    1.  Rotate through features.
-        1.  When rotating through features, a good heuristic is to pick the feature with maximum variance.}
+    1. Split data recursively in half on exactly one feature.
+    1. Rotate through features.
+        1. When rotating through features, a good heuristic is to pick the feature with maximum variance.
 
-Max height of the tree could be $log_2(n)$.
+    Max height of the tree could be $log_2(n)$.
 
-1.  Finding NN for the test point(X,y). 
+1. Finding NN for the test point(X,y). 
 
-    1.  Find region containing (x,y). 
-    1.  Compare to all points in the region.
+    1. Find region containing (x,y). 
+    1. Compare to all points in the region.
 
 1.  How can this partitioning speed up testing?
 
@@ -90,36 +88,36 @@ Max height of the tree could be $log_2(n)$.
 
 1.  Pros: Exact and  Easy to build.
 1.  Cons:
-
     1.  Curse of Dimensionality makes KD-Trees ineffective for higher number of dimensions. May not work better if dimensions are greater than 10. 
     1.  All splits are axis aligned (all dividing hyperplanes are parallel to axis).
 
 
-1.  Approximation: Limit search to m leafs only. 
+1.  Approximation: Limit search to $m$ leafs only. 
 
 ### Ball Trees
 
-1.  Similar to KD-trees, but instead of boxes use hyper-spheres (balls).
-If the distance to the ball, $d_b$, is larger than distance to the currently closest neighbor, we can safely ignore the ball and all points within.
-The ball structure allows us to partition the data along an underlying manifold that our points are on, instead of repeatedly dissecting the entire feature space (as in KD-Trees).
+1.  Similar to KD-trees, but instead of boxes use hyper-spheres (balls). If the distance to the ball, $d_b$, is larger than distance to the currently closest neighbor, we can safely ignore the ball and all points within.
+
+1. The ball structure allows us to partition the data along an underlying manifold that our points are on, instead of repeatedly dissecting the entire feature space (as in KD-Trees).
+
+1. Ball trees allows us to split along the dimension with maximum variance instead of splitting along the feature axis in half. 
+
 1.  Construction :
-![BTC](./Images/ball_tree_construction.png)
+
+    ![BTC](./Images/ball_tree_construction.png)
 
 1.  Ball-Tree Use : 
-
     1.  Same as KD-Trees
     1.  Slower than KD-Trees in low dimensions (d≤3) but a lot faster in high dimensions. Both are affected by the curse of dimensionality, but Ball-trees tend to still work if data exhibits local structure (e.g. lies on a low-dimensional manifold).
 
 ### Locally sensitive hashing (LSH) 
     
-1.  Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes $(h_1, h_2, h_3, ........., h_k)$. 
-1.  Compare x to only those $\frac{n}{2^k}$ points in that particular region. 
-1.  Complexity : $O(Kd +  d\frac{n}{2^k})$. 
-
-    1.  Kd : To find out which point belongs to which region. For that we need to check with each hyperplane and find that. 
-    1.  $d\frac{n}{2^k}$ : Finding the NN by comparing d-dimensional point with $\frac{n}{2^k}$ points. 
-
-1.  Limitations : Choosing the right set and number of hyperplanes are really important. Try a couple of different initializations. Based on the way we choose the hyperplanes, we may miss out the main neighbors and misclassify the point. 
+1. Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes $(h_1, h_2, h_3, ........., h_k)$. 
+1. Compare $x$ to only those $\frac{n}{2^k}$ points in that particular region. 
+1. Complexity : $O(Kd +  d \frac{n}{2^k})$. 
+    1. Kd : To find out which point belongs to which region. For that we need to check with each hyperplane and find that. 
+    1. $d\frac{n}{2^k}$ : Finding the NN by comparing d-dimensional point with $\frac{n}{2^k}$ points. 
+1. Limitations : Choosing the right set and number of hyperplanes are really important. Try a couple of different initializations. Based on the way we choose the hyperplanes, we may miss out the main neighbors and misclassify the point. 
     
 ### Conclusion
 
@@ -171,51 +169,52 @@ or algorithms that try to learn mappings directly from the space of inputs X to 
 1.  In this model, we’ll assume that p(x|y) is distributed according to a multivariate normal distribution.
 
 1.  This Algorithm make use of Bayes theorem to model p(y|x). 
-$$ p(x; \mu, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))$$ 
-Here, $\Sigma$ = Covariance of X. 
-Here, $\mu$ is computed for each class inputs separately. 
-and covariance is common.  
+    $$ p(x; \mu, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))$$ 
+    Here, $\Sigma$ = Covariance of X. 
+    Here, $\mu$ and $\Sigmais computed for each class inputs separately.
+    $$y \approx Bernoulli(\phi)$$ 
 
-$$y \approx Bernoulli(\phi)$$ 
+    $$x|y = 0 \approx N(\mu_0, \Sigma_0)$$ 
 
-$$x|y = 0 \approx N(\mu_0, \Sigma)$$ 
+    $$x|y = 1 \approx N(\mu_1, \Sigma_1)$$ 
 
-$$x|y = 1 \approx N(\mu_1, \Sigma)$$ 
+    $$p(x; \mu_0, \Sigma_0) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma_0)}} exp(-\frac{1}{2}(x-\mu_0)^T \Sigma_0^{-1}(x-\mu_0))$$
 
-$$p(x; \mu_0, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu_0)^T \Sigma^{-1}(x-\mu_0))$$
-
-$$p(x; \mu_1, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu_1)^T\Sigma^{-1}(x-\mu_1))$$
+    $$p(x; \mu_1, \Sigma_1) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma_1)}} exp(-\frac{1}{2}(x-\mu_1)^T\Sigma_1^{-1}(x-\mu_1))$$
 
 1. The log-likelihood of the data is given
-by $$l(\phi, \mu_0, \mu_1,\Sigma) = log {\prod^m}_{i=1}
-p(x(i), y(i); \phi, \mu_0, \mu_1, \Sigma)$$
-$$l(\phi, \mu_0, \mu_1,\Sigma) = log {\prod^m}_{i=1}
-p(x(i)| y(i); \phi, \mu_0, \mu_1, \Sigma) \times p(y(i):\phi)$$ By maximizing $l$ with respect to the parameters, we find the maximum likelihood estimate of the parameters (see problem set 1) to be:
-$$\phi =\frac{1}{m}\sum_{i=1}^m 1\{y(i) = 1\}$$
-$$\mu_0 = \frac{\sum^m_{i=1} 1\{y(i) = 0\}x(i)}{
-\sum^m_{i=1} 1\{y(i) = 0\}}$$
-$$\mu_1 = \frac{\sum^m_{i=1} 1\{y(i) = 1\}x(i)}{
-\sum^m_{i=1} 1\{y(i) = 1\}}$$
+by 
+    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i), y(i); \phi, \mu_0, \mu_1, \Sigma_0, \Sigma_1)$$
 
-$$ \Sigma = \frac{1}{m} \sum^m_{i=1} (x(i) - \mu_{y^(i)})(x(i) - \mu_{y^(i)})^T $$
+    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i)| y(i); \phi, \mu_0, \mu_1, \Sigma_0, \Sigma_1) \times p(y(i);\phi)$$ 
+    
+    By maximizing $l$ with respect to the parameters, we find the maximum likelihood estimate of the parameters (see problem set 1) to be:
+
+    $$\phi =\frac{1}{m}\sum_{i=1}^m 1\{y(i) = 1\}$$
+
+    $$\mu_0 = \frac{\sum^m_{i=1} 1\{y(i) = 0\} x(i)}{\sum^m_{i=1} 1\{y(i) = 0\}}$$
+
+    $$\mu_1 = \frac{\sum^m_{i=1} 1\{y(i) = 1\}x(i)}{\sum^m_{i=1} 1\{y(i) = 1\}}$$
+
+$$ \Sigma_{y^(i)} = \frac{1}{m} \sum^m_{i=1} (x(i) - \mu_{y^(i)})(x(i) - \mu_{y^(i)})^T $$
 
 1. **GDA vs Logistic Regression** : 
-GDA works best if X distribution is multivariate. 
-But LR works best even for other distributions also. 
+GDA works best if X distribution is multivariate. But Logistic Regression works best even for other distributions also. 
 
 
 ## Naive Bayes Classifier
+
 [Source](https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote05.html)
 
 ### Introduction
 
-1.  In GDA, the feature vectors x were continuous, real-valued vectors. 
-1.  Naive Bayes is different learning algorithm in which the xj ’s are discrete-valued.
+1.  In GDA, the feature vectors $X$ were continuous, real-valued vectors. 
+1.  Naive Bayes is different learning algorithm in which the $x_j$ ’s are discrete-valued.
 1.  This algorithm is mostly used in case of text because words are discrete. 
 1.  Naive Bayes works best if we have very less data. 
 1.  It tries to model the data and finds out the parameters for the distributions of the classes and based on those parameters, it predicts the new data point.
 1.  This is extremely fast because there is no loop or anything. Just need to find out the parameters for the class distributions.
-1.  Naive Bayes is a linear classifier. You can find that proof in cornell lec 11 in first 10 mins. 
+1.  Naive Bayes is a linear classifier. You can find that proof in [Cornell lec 11](https://www.youtube.com/watch?v=GnkDzIOxfzI) in first 10 mins. 
 
 ### Assumptions
 
@@ -230,7 +229,7 @@ Using the Bayes theorem, we can find $P(Y|X)$.
 
 ### Note
 
-Even if the naive bayes assumption violates, this algo works very well. If the naive Bayes assumption holds, then Naive Bayes works similar to Logitstic Regression. Proof can be found in above cornell notes. 
+Even if the naive bayes assumption violates, this algo works very well. If the naive Bayes assumption holds, then Naive Bayes works similar to Logitstic Regression. [Proof](https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote05.html) 
 
 My Comments : This is easy. Watch [Krish Naik Video](https://www.youtube.com/watch?v=jS1CKhALUBQ) for intution and watch [Cornell Video](https://www.youtube.com/watch?v=rqB0XWoMreU) for in-depth understanding.
 
@@ -240,13 +239,13 @@ Source -> [Stanford notes](https://see.stanford.edu/materials/aimlcs229/cs229-no
 ### Introduction
 
 1.  In Linear Regression, We try to fit the data to a linear function. Let y as a linear function of x:
-$$h_{\theta}(x) = {\theta}_0 + {\theta}_1x_1 + {\theta}_2x_2$$
+    $$h_{\theta}(x) = {\theta}_0 + {\theta}_1x_1 + {\theta}_2x_2$$
 1.  Here the output is continuous value. $y \in \Re$
 1.  To simplify our notation, we also introduce the convention of letting $x_0 = 1$ (this is the intercept term), so that
-$$ h(x) = {\Sigma_{i=0}}^m \theta_i x_i = \theta^T x$$
+    $$ h(x) = {\Sigma_{i=0}}^m \theta_i x_i = \theta^T x$$
 1.  Our objective is to make h(x) close to y, at least for
 the training examples we have. Therefore, we try to minimize the loss function :
-$$J(\theta) = \frac{1}{2} {\sum_{i=0}}^m (h_\theta(x^i) - y^i)^2 $$
+    $$J(\theta) = \frac{1}{2} {\sum_{i=0}}^m (h_\theta(x^i) - y^i)^2 $$
 
 Note : We can go for the different loss function, that is absolute loss(MAE), power 4 etc. 
 MAE is not differentiable at 0. Power4 or any other even power function penalizes the outliers very much and also those turns out to be non-convex function. 
