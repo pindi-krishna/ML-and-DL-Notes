@@ -223,7 +223,7 @@ All the discrete features are independent of each other given the label.
 ### Classifier
 
 In case of a binary classifier, $y \in \{0,1\}$ and $X : X_{M\times N}$.  
-$$P(X|Y = 0) = P(X_1|Y = 0) \times P(X_2|Y = 0) ........... \times P(X_N|Y = 0) \rightarrow Features are independent$$
+$$P(X|Y = 0) = P(X_1|Y = 0) \times P(X_2|Y = 0) ........... \times P(X_N|Y = 0) \rightarrow \text{Features are independent}$$
 $$P(X|Y = 1) = P(X_1|Y = 1) \times P(X_2|Y = 1) ........... \times P(X_N|Y = 1) $$
 Using the Bayes theorem, we can find $P(Y|X)$. 
 
@@ -255,21 +255,26 @@ MAE is not differentiable at 0. Power4 or any other even power function penalize
 1.  We want to choose $\theta$ so as to minimize $J(\theta)$.
 1.  Let’s consider the gradient descent
 algorithm, which starts with some initial θ, and repeatedly performs the update:
-$$ \theta_j := \theta_j - \alpha \frac{\partial J}{\partial \theta_j}$$
-where $\alpha$ is the learning rate.
-1.  The (unweighted) linear regression algorithm
-that we saw earlier is known as a parametric learning algorithm, because
-it has a fixed, finite number of parameters (the θi’s), which are fit to the data. Once we’ve fit the $\theta$i’s and stored them away, we no longer need to
+    $$ \theta_j := \theta_j - \alpha \frac{\partial J}{\partial \theta_j}$$
+    where $\alpha$ is the learning rate.
+1. This equation is derived from Taylor series. To understand the above equation in more depth, watch this Taylor series [3-Blue-1-Brown Video](https://www.youtube.com/watch?v=3d6DsjIBzJ4&t=295s)
+1.  The linear regression algorithm that we saw earlier is known as a parametric learning algorithm, because it has a fixed, finite number of parameters (the $\theta_i$’s), which are fit to the data. Once we’ve fit the $\theta_i$’s and stored them away, we no longer need to
 keep the training data around to make future predictions.
 
 ### Assumptions
 
-1.  Linearity: The relationship between X and the mean of Y is linear.
-1.  Homoscedasticity: The variance of residual is the same for any value of X.
-1.  Independence: Observations are independent of each other.(I.I.D)
-1.  Normality: For any fixed value of X, Y is normally distributed
+1.  Linearity: The relationship between $X$ and the mean of $Y$ is linear.
+1.  Independence: Observations are independent of each other.(Independent and Identical distribution $I.I.D$).
+1.  Normality: For any fixed value of $X$, $Y$ is normally distributed.
+1. Homoscedasticity: 
+    * The variance of residual is the same for any value of $X$. In below figure, variance of $Y$ (actual value) at every $X$ value is same. 
 
-### Normal method to minimize the loss
+    The blue regression lines connects the fitted y-values at each x-value and is assumed to be straight(*1^{st} assumption*). The red density curves visualise that the model assumes the y-data at each x-value to be normally distributed(*$3^{rd}$ assumption*) with the same variance (*$4^{th}$ assumption*) at different x-values.
+
+    ![assumption](./Images/lr_assumptions.png)
+
+
+### Normal method to minimize the loss (*Linear Regression Closed form Solution*)
 
 1. X ~ $[]_{m\times n}$  and y ~ $[]_{m\times 1}$.
 1. We have to minimize $$J = \frac{1}{2} (X\theta - y)^T (X\theta - y)$$
@@ -287,11 +292,12 @@ where $\epsilon(i)$ is an error term.
 
 1.  Assumptions :
 
-    1.  $\epsilon(i)$ are distributed IID (independently and identically distributed).
+    1.  $\epsilon(i)$ are distributed $I.I.D$ (Independently and Identically distributed).
     1.  $\epsilon(i) \approx N(0, \sigma^2)$ . This is same as $y_i\approx N(w^Tx_i, \sigma^2)$
     1.  $\sigma^2 = 1$ This doesn't effect the calculation
 
-1.  Therefore, $$ p(\epsilon) =  \mathcal{N}(x; 0, 1) = \sqrt{\frac{1}{2 \pi}} exp(-\frac{1}{2}(y^i - \theta^T x^i)^2)$$
+1.  Therefore, $$ p(\epsilon) =  \mathcal{N}(x; 0, 1) = \sqrt{\frac{1}{2 \pi}} exp(-\frac{1}{2}\epsilon^2)$$
+
 This implies that , $$ p(y^i|x^i;\theta) = \sqrt{\frac{1}{2 \pi}} exp(-\frac{1}{2}(y^i - \theta^T x^i)^2)$$
 Try to maximize the log likelihood. 
 
@@ -302,15 +308,16 @@ Try to maximize the log likelihood.
 Sometimes we cannot fit a straight line to the whole data. In those cases, if we consider only few datapoints near to the point we wanted to estimate, we may fit the line to those points in the neighborhood of that points. 
 
 ### How
+
 1. To do so, we assign more weight to the points near to the test point and less weight to points far from it. 
 
-1. Each time we want to predict y for a test point x', we need to fit the line to points near to x'. 
+1. Each time we want to predict $y$ for a test point $x'$, we need to fit the line to points near to $x'$. 
 
 1. Assigning weights will be done using the formula : $$w(i) = exp[-\frac{(x(i) - x')^2}{\tau^2}]$$
 
-1. Fit θ to minimize $$\sum_i w(i)(y(i) - \theta^T x(i))^2$$.
+1. Fit $\theta$ to minimize $$\sum_i w(i).[y(i) - \theta^T x(i)]^2$$
 
-1. The parameter $\tau$ controls how quickly the weight of a training example falls off with distance of its x(i) from the query point x; $\tau$ is called the bandwidth parameter,
+1. The bandwidth parameter $\tau$ controls how quickly the weight of a training example falls off with distance of its $x(i)$ from the query point $x$;
 
 1. This is **non-parametric** learning algorithm (i,e) to
 make predictions using locally weighted linear regression, we need to keep
@@ -318,19 +325,19 @@ the entire training set around.
 
 ## Logistic Regression(LR)
 
-Source -> [Stanford notes](https://see.stanford.edu/materials/aimlcs229/cs229-notes1.pdf)
+[Stanford notes](https://see.stanford.edu/materials/aimlcs229/cs229-notes1.pdf)
 
-### Intro
+### Introduction
 
 1. This is used for classification.
-1. This is same as Linear regression, but as we need to classify, we need discrete outputs not continuous. Therefore, we use sigmoid function at the end.  $$h_\theta{x} = sigmoid(\theta^T x)$$
-1.  Here sigmoid gives the probability of that training example belonging to class 1. 
+1. This is same as Linear regression, but as we need to classify, we need discrete outputs not continuous. Therefore, we use sigmoid function at the end.  $$h_\theta(x) = \text{Sigmoid}(\theta^T x) = \frac{1}{1 + e^{-\theta^T x}}$$
+1.  Here sigmoid gives the probability of that training example belonging to **class 1**. 
 
 
 ### Minimization of Loss Function
 
 1. We want to choose $\theta$ so as to minimize $J(\theta)$.
-1. To minimize J, we find out its derivative and surprisingly, derivative will end up as same as in case of linear regression. 
+1. To minimize $J$, we find out its derivative and surprisingly, derivative will end up as same as in case of linear regression. 
 1. Let’s consider the gradient descent
 algorithm, which starts with some initial $\theta$, and repeatedly performs the update: $$ \theta_j := \theta_j - \alpha \frac{\partial J(\theta)}{\partial \theta_j}$$
 1. If different features have different scales, then the loss is dominated by large scale features. 
@@ -339,15 +346,15 @@ algorithm, which starts with some initial $\theta$, and repeatedly performs the 
 
 ### Probabilistic Interpretation
 
-1.  Here in case of binary classification, the outputs have the bernoulli distribution(0 and 1) and in case of multi class classification,  they have multinouli distribution. 
+1.  Here in case of binary classification, the outputs have the bernoulli distribution ($0$ and $1$) and in case of multi class classification,  they have multinouli distribution. 
 1.  Binary classification :  $$P(y = 1 | x; θ) = h_\theta(x)$$ $$P(y = 0 | x; θ) = 1 - h_\theta(x)$$ $$p(y | x; \theta) = (h_\theta(x))^y (1 - h_\theta(x))^{1-y}$$
-1. Assuming that the m training examples were generated independently, we can then write down the likelihood of the parameters as $$L(\theta) = p(~y | X; \theta)={\Pi^m}_{i=1} p(y(i) | x(i); \theta)$$ We try to maximize the log -likelihood function. 
-In this process, we end up finding the logistic or sigmoid function. 
+1. Assuming that the $m$ training examples were generated independently, we can then write down the likelihood of the parameters as $$L(\theta) = p(~y | X; \theta)=\Pi_{i=1}^{^m} p(y(i) | x(i); \theta)$$ We try to maximize the log-likelihood function. 
+In this process, we end up finding the Cross Entropy loss function. 
 
 
 ## Generalized Linear models
 
-Source -> [Stanford notes](https://see.stanford.edu/materials/aimlcs229/cs229-notes1.pdf)
+[Stanford notes](https://see.stanford.edu/materials/aimlcs229/cs229-notes1.pdf)
 
 ### Intro
 
@@ -355,12 +362,11 @@ Source -> [Stanford notes](https://see.stanford.edu/materials/aimlcs229/cs229-no
 of $x$ and $\theta$. In this section, we will show that both of these methods are special cases of a broader family of models, called Generalized Linear Models (GLMs).
 
 1. We say that a class of distributions is in the exponential family if it can be written in the form $$p(y; \eta) = b(y) exp(\eta^T T(y) - a(\eta))$$
-    1. $\eta$ - the natural parameter (also called the canonical param-eter) of the distribution; 
-    2. $T(y)$ - sufficient statistic (for the distribu-
-tions we consider, it will often be the case that T(y) = y)
-    3. $a(\eta)$ - log partition function. The quantity $e^{-a(\eta)}$ essentially plays the role of a normalization constant, that makes sure the distribution $p(y; \eta)$ sums/integrates over y to 1.
+    1. $\eta$ - the natural parameter (also called the canonical parameter) of the distribution; 
+    2. $T(y)$ - sufficient statistic (for the distributions we consider, it will often be the case that $T(y) = y$)
+    3. $a(\eta)$ - log partition function. The quantity $e^{-a(\eta)}$ essentially plays the role of a normalization constant, that makes sure the distribution $p(y; \eta)$ sums/integrates over $y$ to $1$.
 
-1. A fixed choice of T, a and b defines a family (or set) of distributions that is parameterized by $\eta$; as we vary $\eta$, we then get different distributions within
+1. A fixed choice of $T$, $a$ and $b$ defines a family (or set) of distributions that is parameterized by $\eta$; as we vary $\eta$, we then get different distributions within
 this family.
 
 ### Distributions in Exponential Family
@@ -376,12 +382,12 @@ mean $\phi$, written Bernoulli($\phi$), specifies a distribution over $y \in {0,
 
 1. As we vary $\phi$, we obtain Bernoulli distributions with different means. We now show that this class of Bernoulli distributions, ones obtained by varying φ, is in the exponential family; i.e., that there is a choice of T, a and b so that above equation becomes exactly the class of Bernoulli distributions. $$p(y; \phi) = \phi^y (1 - \phi)^{1-y} = exp(y log \phi + (1 - y) log(1 - \phi)) $$ $$= exp ((log(\frac{\phi}{1 - \phi}))y + log(1 - \phi))$$
 1.  Thus, the natural parameter is given by $\eta = log(\frac{\phi}{(1 - \phi)})$. Interestingly, if
-we invert this definition for $\eta$ by solving for $\phi$ in terms of $\eta$, we obtain $ φ = 1/(1 + e^{-\eta})$. This is the familiar sigmoid function!
+we invert this definition for $\eta$ by solving for $\phi$ in terms of $\eta$, we obtain $ \phi = 1/(1 + e^{-\eta})$. This is the familiar sigmoid function!
 
 1.  The formulation of the Bernoulli distribution as an exponential family distribution,
-$$T(y) = y$$
-$$a(\eta) = -log(1 - \phi) = log(1 + e^{\eta})$$
-$$b(y) = 1$$
+    $$T(y) = y$$
+    $$a(\eta) = -log(1 - \phi) = log(1 + e^{\eta}) - \eta$$
+    $$b(y) = 1$$
 
 
 ### Gaussian
@@ -428,96 +434,95 @@ The link function is given (for i = 1, . . . , k) by
 $$\eta_i = log((\frac{\phi_{i}}{\phi_k})) $$
 
 We need to find the response function, $\phi_i$. 
-Using $\phi_k = \frac{1}{\sum_{i=1}^k e^{\eta_i}} $ to give response function : $$\phi_i = \frac{e^{\eta_i}}{\sum_{j=1}^k e^{\eta_j}} $$
+Using $\phi_1 + \phi_2 + .... + \phi_k = 1 $ to give response function : $$\phi_i = \frac{e^{\eta_i}}{\sum_{j=1}^k e^{\eta_j}} $$
 
 This function mapping from the $\eta$’s to the $\phi$’s is called the softmax function.
 
 
 ## Support Vector Machines(SVM)
 
-1.  Consider a positive training example (y = 1). The larger $\theta^T x$ is, the larger also is h(x) = p(y = 1|x;w, b), and thus also the higher our degree of “confidence”
-that the label is 1.
+1.  Consider a positive training example ($y = 1$). The larger $\theta^T x$ is, the larger also is $h(x) = p(y = 1|x;w, b)$, and thus also the higher our degree of “confidence” that the label is 1.
 
 1.  Again informally it seems that we’d have found a good fit to
-the training data if we can find θ so that $\theta^T x(i) >> 0 $ whenever y(i) = 1, and $\theta^T x(i) << 0 $ whenever y(i) = 0, since this would reflect a very confident (and correct) set of classifications for all the training examples.
+the training data if we can find $\theta$ so that $\theta^T x(i) >> 0$ whenever y(i) = 1, and $\theta^T x(i) << 0 $ whenever $y(i) = 0$, since this would reflect a very confident (and correct) set of classifications for all the training examples.
 
 1. We’ll use $y \in \{-1, 1\}$ (instead of $\{0, 1\}$) to denote the class labels. $$h_{w,b}(x) = g(w^T x + b)$$
 Here, $g(z) = 1$ if $z \geq 0$, and $g(z) = -1$ otherwise.
-w takes the role of $[\theta_1 . . . \theta_n]^T$ and b is 
+$w$ takes the role of $[\theta_1, . . . ,\theta_n]^T$ and $b$ is 
 intercept term.
 
-1. Note also that, from our definition of g above, our classifier will directly predict either 1 or -1, without first going through the intermediate step of estimating the probability of y being 1.
+1. Note also that, from our definition of $g$ above, our classifier will directly predict either $1$ or $-1$, without first going through the intermediate step of estimating the probability of $y$ being $1$.
 
-1. Given a training example (x(i), y(i)), we define the functional margin of (w, b) with respect to the training example $$\gamma(i) = y(i)(w^T x + b)$$ 
+1. Given a training example ($x(i), y(i)$), we define the functional margin of ($w, b$) with respect to the training example $$\gamma(i) = y(i)(w^T x(i) + b)$$ 
 
-1. If $y(i)(w^T x + b) > 0$, then our prediction on this example is correct.
+1. If $y(i)(w^T x(i) + b) > 0$, then our prediction on this example is correct.
 
-1. Given our choice of g, we note that if we replace w with 2w and b with 2b, then since $g(w^Tx+b) = g(2w^Tx+2b)$,this would not change $h_{w,b}(x)$ at all. I.e., g, and hence also $h_{w,b}(x)$, depends only on the sign, but not on the magnitude, of $w^T x + b$. However, replacing (w, b) with (2w, 2b) also results in multiplying our functional margin by a factor of 2.
+1. Given our choice of $g$, we note that if we replace $w$ with $2w$ and b with $2b$, then since $g(w^Tx+b) = g(2w^Tx+2b)$,this would not change $h_{w,b}(x)$ at all. (i.e.), $g$, and hence also $h_{w,b}(x)$, depends only on the sign, but not on the magnitude of $w^T x + b$. However, replacing $(w, b)$ with $(2w, 2b)$ also results in multiplying our functional margin by a factor of $2$.
 
-1. Intuitively, it might therefore make sense to impose some sort of normalization condition such as that $||w||_2 = 1$ i.e., we might replace (w, b) with $(w/||w||_2, b/||w||2)$, and instead consider the functional margin of $(w/||w||_2, b/||w||_2)$.
+1. Intuitively, it might therefore make sense to impose some sort of normalization condition such as that $||w||_2 = 1$ i.e., we might replace $(w, b)$ with $(w/||w||_2, b/||w||_2)$.
 
-1. Given a training set S = {(x(i), y(i)); i = 1, . . . ,m}, we also define the function margin of (w, b) with respect to S as the smallest of the functional margins of the individual training examples $$\gamma^\wedge (i) = min_{i=1,...,m} \gamma(i)$$
+1. Given a training set $S = \{(x(i), y(i)); i = 1, . . . ,m\}$, we also define the functional margin of $(w, b)$ with respect to $S$ as the smallest of the functional margins of the individual training examples $$\hat{\gamma}(i) = min_{i=1,...,m} \gamma(i)$$
 
-1. Geometric Margins : The geometric margin of (w, b) with respect to a training example (x(i), y(i)) to be $$\gamma(i) = y(i)(\frac{w^T}{||w||} x(i) + \frac{b}{||w||})$$
+1. Geometric Margins : The geometric margin of $(w, b)$ with respect to a training example $(x(i), y(i))$ to be $$\hat{\gamma}(i) = y(i)(\frac{w^T}{||w||} x(i) + \frac{b}{||w||})$$
 
 1. Note that if $||w|| = 1$, then the functional margin equals the geometric margin — this thus gives us a way of relating these two different notions of margin.
 
-1.  Specifically, because of this invariance to the scaling of the parameters, when trying to fit w and b to training data, we can impose an arbitrary scaling constraint on w without changing anything important; for instance, we can demand that $||w|| = 1$, or$|w1| = 5$, or $|w1 + b| + |w2| = 2$, and any of these can be satisfied simply by rescaling w and b.
+1.  Specifically, because of this invariance to the scaling of the parameters, when trying to fit $w$ and $b$ to training data, we can impose an arbitrary scaling constraint on $w$ without changing anything important; for instance, we can demand that $||w|| = 1$, or $|w1| = 5$, or $|w1 + b| + |w2| = 2$, and any of these can be satisfied simply by rescaling $w$ and $b$.
 
 ### Objective 
-$$max_{w,b} \gamma$$ 
-s.t. $y(i)(w^T x(i) + b) \geq \gamma$ for  i = 1, . . . ,m and $||w|| = 1$ 
 
-1. I.e., we want to maximize $\gamma$, subject to each training example having functional margin at least $\gamma$. The $||w|| = 1$ constraint moreover ensures that the
-functional margin equals to the geometric margin, so we are also guaranteed that all the geometric margins are at least $\gamma$.
+$$max_{w,b} \gamma$$ 
+s.t  $y(i)(w^T x(i) + b) \geq \hat{\gamma}$, for  $i = 1, . . . ,m$ and $||w|| = 1$ 
+
+1. (i.e.), we want to maximize $\gamma$, subject to each training example having functional margin at least $\hat{\gamma}$. The $||w|| = 1$ constraint moreover ensures that the
+functional margin equals to the geometric margin, so we are also guaranteed that all the geometric margins are at least $\hat{\gamma}$.
 
 1. If we could solve the optimization problem above, we’d be done. But the “$||w|| = 1$” constraint is a nasty (non-convex) one, and this problem certainly
 isn’t in any format that we can plug into standard optimization software to
 solve. So, let’s try transforming the problem into a nicer one $$max_{w,b} \frac{\gamma}{||w||}$$
-s.t. $y(i)(w^T x(i) + b) \geq \gamma$ for  i = 1, . . . ,m.
+s.t. $y(i)(w^T x(i) + b) \geq \hat{\gamma}$ for  $i = 1, . . . ,m$.
 
-1. Here, we’re going to maximize $\frac{\gamma^\wedge}{||w|}$, subject to the functional margins all being at least $\gamma^\wedge$. Since the geometric and functional margins are related by $\gamma = \frac{\gamma^\wedge}{||w|}$, this will give us the answer we want. 
-
-1. Recall our earlier discussion that we can add an arbitrary scaling constraint on w and b without changing anything. This is the key idea we’ll use now.
+1. Here, we’re going to maximize $\frac{\hat{\gamma}}{||w|}$, subject to the functional margins all being at least $\hat{\gamma}$. Recall our earlier discussion that we can add an arbitrary scaling constraint on $w$ and $b$ without changing anything. This is the key idea we’ll use now.
 
 1. We will introduce the scaling constraint that the
-functional margin of w, b with respect to the training set must be 1: $$\gamma^\wedge = 1$$
+functional margin of $w$, $b$ with respect to the training set must be $1$: $$\hat{\gamma} = 1$$
 
-1. Since multiplying w and b by some constant results in the functional margin
-being multiplied by that same constant, this is indeed a scaling constraint,
-and can be satisfied by rescaling w, b. Plugging this into our problem above,
+1. Since multiplying $w$ and $b$ by some constant results in the functional margin being multiplied by that same constant, this is indeed a scaling constraint, and can be satisfied by rescaling $w, b$. Plugging this into our problem above,
 and noting that maximizing $$\frac{\gamma^\wedge}{||w||} = \frac{1}{||w||}$$ is the same thing as minimizing $||w||^2$, we now have the following optimization problem: $$min_{w,b} ||w||^2$$
 s.t. $y(i)(w^T x(i) + b) \geq 1$ for  $i = 1, . . . ,m$ 
 1. The above is an optimization problem with a convex quadratic objective and only linear constraints. Its solution gives us the optimal margin classifier.
 
-Note : The mathematical derivation of SVM can be found [here](https://iiitaphyd-my.sharepoint.com/:b:/g/personal/krishna_chandra_research_iiit_ac_in/EWGaLL7gMy9Ht68sJW--RmgBP8n5wbJ2TALp2bFNLRtQ_g?e=G7vngX)
-and the clarity will be given in [cornell lec14](https://www.youtube.com/watch?v=xpHQ6UhMlx4&list=PLl8OlHZGYOQ7bkVbuRthEsaLr7bONzbXS&index=14) at $35:00$. 
+*Note : The mathematical derivation of SVM can be found [here](https://iiitaphyd-my.sharepoint.com/:b:/g/personal/krishna_chandra_research_iiit_ac_in/EWGaLL7gMy9Ht68sJW--RmgBP8n5wbJ2TALp2bFNLRtQ_g?e=G7vngX)
+and the clarity will be given in [cornell lec14](https://www.youtube.com/watch?v=xpHQ6UhMlx4&list=PLl8OlHZGYOQ7bkVbuRthEsaLr7bONzbXS&index=14) at $35:00$.* 
 
-### What if the data is not linearly separable
-In this case, the constraint is never satisfied and we can never find the hyperplane. Therefore, a slack has been introduced. Now the objective and constraint is slightly modified so that the constraint is satisfied, 
+### What if the data is not linearly separable?
 
-$$min_{w,b} ||w||^2 + C.\sum_i \epsilon_i$$
-s.t. $y(i)(w^T x(i) + b) \geq 1$ and $\epsilon_i \geq 0$ for all $i$. $\epsilon_i = max(0, 1 - y(i)(w^T x(i) + b))$. $C$ is a hyperparameter set by us. This penalizes the outliers or the datapoints which doesn't satisfy the constraints. For $C$, try from $10^{-4} to 100$ and check which one works better. For clear understanding, look at figure below. 
+1. In this case, the constraint is never satisfied and we can never find the hyperplane. Therefore, a slack variable $\epsilon$ has been introduced. Now the objective and constraint is slightly modified so that the constraint is satisfied, 
 
-![SVMC](./Images/SVM_C.png)
+    $$min_{w,b} ||w||^2 + C.\sum_i \epsilon_i$$
+    s.t. $y(i)(w^T x(i) + b) \geq 1$ and $\epsilon_i \geq 0$ for all $i$ and $\epsilon_i = max(0, 1 - y(i)(w^T x(i) + b))$.
 
-### Parametric vs Non-parametric algorithms}
-An interesting edge case is kernel-SVM. Here it depends very much which kernel we are using. E.g. linear SVMs are parametric (for the same reason as the Perceptron or logistic regression). So if the kernel is linear the algorithm is clearly parametric. However, if we use an RBF kernel then we cannot represent the classifier of a hyper-plane of finite dimensions. Instead we have to store the support vectors and their corresponding dual variables αi -- the number of which is a function of the data set size (and complexity). Hence, the kernel-SVM with an RBF kernel is non-parametric. A strange in-between case is the polynomial kernel. It represents a hyper-plane in an extremely high but still finite-dimensional space. So technically one could represent any solution of an SVM with a polynomial kernel as a hyperplane in an extremely high dimensional space with a fixed number of parameters, and the algorithm is therefore (technically) parametric. However, in practice this is not practical. Instead, it is almost always more economical to store the support vectors and their corresponding dual variables (just like with the RBF kernel). It therefore is technically parametric but for all means and purposes behaves like a non-parametric algorithm.
+1. $C$ is a hyperparameter set by us. This penalizes the outliers or the datapoints which doesn't satisfy the constraints. For $C$, try from $10^{-4}$ to $100$ and check which one works better. For clear understanding, look at figure below. 
+
+    ![SVMC](./Images/SVM_C.png)
+
+### Parametric vs Non-parametric algorithms
+
+An interesting edge case is kernel-SVM. Here it depends very much on kernel we are using. e.g. linear SVMs are parametric (for the same reason as the Perceptron or logistic regression). So if the kernel is linear the algorithm is clearly parametric. However, if we use an RBF kernel then we cannot represent the classifier of a hyper-plane of finite dimensions. Instead we have to store the support vectors and their corresponding dual variables $\alpha_i$ -- the number of which is a function of the data set size (and complexity). Hence, the kernel-SVM with an RBF kernel is non-parametric. A strange in-between case is the polynomial kernel. It represents a hyper-plane in an extremely high but still finite-dimensional space. So technically one could represent any solution of an SVM with a polynomial kernel as a hyperplane in an extremely high dimensional space with a fixed number of parameters, and the algorithm is therefore (technically) parametric. However, in practice this is not practical. Instead, it is almost always more economical to store the support vectors and their corresponding dual variables (just like with the RBF kernel). It therefore is technically parametric but for all means and purposes behaves like a non-parametric algorithm.
 
 ### Important Q $\&$ A
 1. Why shouldn't we incorporate bias as a constant features when working with SVMs ?
     1. If we include bias in the datapoint, then when maximizing the margin, we are trying to minimize the $||w||^2 + b^2$ which changes the objective function and this is not what we want.  In the formula of distance from point to plane, we dont include bias in the denominator. therefore, bias will not play any role in the objective function, but it plays in the satisfying the constraint. 
     
-
 ## Empirical Risk Minimization
 
 [Source](https://www.cs.cornell.edu/courses/cs4780/2018sp/lectures/lecturenote10.html)
 
-1. Remember the Unconstrained SVM Formulation $$\min_{\mathbf{w}}\ C\underset{Hinge-Loss}{\underbrace{\sum_{i=1}^{n}max[1-y_{i}\underset{h({\mathbf{x}_i})}{\underbrace{(w^{\top}{\mathbf{x}_i}+b)}},0]}}+\underset{l_{2}-Regularizer}{\underbrace{\left\Vert w\right\Vert _{z}^{2}}}$$
+1. Remember the Unconstrained SVM Formulation $$\min_{\mathbf{w}}\ C\underset{Hinge-Loss}{\underbrace{\sum_{i=1}^{m}max[1-y_{i}\underset{h({\mathbf{x}_i})}{\underbrace{(w^{\top}{\mathbf{x}_i}+b)}},0]}}+\underset{l_{2}-Regularizer}{\underbrace{\left\Vert w\right\Vert _{z}^{2}}}$$
 
 1. The hinge loss is the SVM's loss/error function of choice, whereas the $\left.l_{2}\right.$-regularizer reflects the complexity of the solution, and penalizes complex solutions. Unfortunately, it is not always possible or practical to minimize the true error, since it is often not continuous and/or differentiable. 
 
-1. However, for most Machine Learning algorithms, it is possible to minimize a "Surrogate" Loss Function, which can generally be characterized as follows: $$ \min_{\mathbf{w}}\frac{1}{n}\sum_{i=1}^{n}\underset{Loss}{\underbrace{l_{(s)}(h_{\mathbf{w}}({\mathbf{x}_i}),y_{i})}}+\underset{Regularizer}{\underbrace{\lambda r(w)}}$$
+1. However, for most Machine Learning algorithms, it is possible to minimize a "Surrogate" Loss Function, which can generally be characterized as follows: $$ \min_{\mathbf{w}}\frac{1}{m}\sum_{i=1}^{m}\underset{Loss}{\underbrace{l_{(s)}(h_{\mathbf{w}}({\mathbf{x}_i}),y_{i})}}+\underset{Regularizer}{\underbrace{\lambda r(w)}}$$
 where the Loss Function is a continuous function which penalizes training error, and the Regularizer is a continuous function which penalizes classifier complexity. Here we define $\lambda$ as $\frac{1}{C}$.
 
 1. The science behind finding an ideal loss function and regularizer is known as Empirical Risk Minimization or Structured Risk Minimization.
@@ -548,7 +553,7 @@ Plots of Common Regression Loss Functions - x-axis: $\left.h(\mathbf{x}_{i})y_{i
 
 $$ \min_{\mathbf{w},b} \sum_{i=1}^n\ell(\mathbf{w}^\top \vec x_i+b,y_i)+\lambda r(\mathbf{w}) \Leftrightarrow \min_{\mathbf{w},b} \sum_{i=1}^n\ell(\mathbf{w}^\top \vec x_i+b,y_i) \textrm { subject to: } r(w)\leq B$$
 
-For each $\left.\lambda\geq0\right.$, there exists $\left.B\geq0\right.$ such that the two formulations in (4.1) are equivalent, and vice versa. In previous sections, $\left.l_{2}\right.$-regularizer has been introduced as the component in SVM that reflects the complexity of solutions. Besides the $\left.l_{2}\right.$-regularizer, other types of useful regularizers and their properties are listed below
+ In previous sections, $\left.l_{2}\right.$-regularizer has been introduced as the component in SVM that reflects the complexity of solutions. Besides the $\left.l_{2}\right.$-regularizer, other types of useful regularizers and their properties are listed below.
 
 Loss Functions With Regression, i.e. $y\in\mathbb{R}$
 ![regtable](./Images/reg_table.png)
