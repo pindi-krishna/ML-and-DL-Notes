@@ -610,11 +610,14 @@ In case of KD trees, If you knew that a test point falls into a cluster of 1 mil
 
 ### Introduction
 
-Decision trees are exploiting exactly that. Here, we do not store the training data, instead we use the training data to build a tree structure that recursively divides the space into regions with similar labels. The root node of the tree represents the entire data set. This set is then split roughly in half along one dimension by a simple threshold t. All points that have a feature value ≥t fall into the right child node, all the others into the left child node. The threshold t and the dimension are chosen so that the resulting child nodes are purer in terms of class membership. Ideally all positive points fall into one child node and all negative points in the other. If this is the case, the tree is done. If not, the leaf nodes are again split until eventually all leaves are pure (i.e. all its data points contain the same label) or cannot be split any further (in the rare case with two identical points of different labels).  
+1. Decision trees are exploiting exactly that. Here, we do not store the training data, instead we use the training data to build a tree structure that recursively divides the space into regions with similar labels. 
+1. The root node of the tree represents the entire data set. This set is then split roughly in half along one dimension by a simple threshold $t$. All points that have a feature value $≥t$ fall into the right child node, all the others into the left child node. The threshold $t$ and the dimension are chosen so that the resulting child nodes are purer in terms of class membership. 
+1. Ideally all positive points fall into one child node and all negative points in the other. If this is the case, the tree is done. If not, the leaf nodes are again split until eventually all leaves are pure (i.e. all its data points contain the same label) or cannot be split any further (in the rare case with two identical points of different labels).  
 
 ### Parametric or Non-Parametric
 
-Decision Trees are also an interesting case. If they are trained to full depth they are non-parametric, as the depth of a decision tree scales as a function of the training data (in practice O(log2(n))). If we however limit the tree depth by a maximum value they become parametric (as an upper bound of the model size is now known prior to observing the training data). We can also split on the same feature multiple times. 
+1. Decision Trees are also an interesting case. If they are trained to full depth they are non-parametric, as the depth of a decision tree scales as a function of the training data (in practice $O(log2n)$). 
+1. If we however limit the tree depth by a maximum value they become parametric (as an upper bound of the model size is now known prior to observing the training data). We can also split on the same feature multiple times. 
 
 ### Advantages
 
@@ -626,15 +629,15 @@ Decision Trees are also an interesting case. If they are trained to full depth t
 ### Limitations
 
 1.  Splitting the tree until each and every point in the training set is correct because leads to overfitting. 
-1.  **Decision boundaries are always parallel to the axes. }
+1.  *Decision boundaries are always parallel to the axes.*
 1.  To find out the best split, impurity function for all the possible splits in all the possible features have to be tried and consider the split with lowest impurity. I guess, it is very slow in case of continuous features. 
 
 ### Impurity Functions
 
-Data: $S=\{(x_1,y_1),…,(x_n,y_n)\},y_i \in \{1,…,c\}$, where c is the number of classes. 
-1. Gini impurity: Let $S_k \subset S$ where $S_k=\{(x,y) \in S:y=k\}$ (all inputs with labels k) $S=S_1\cup S_2 \cup ..... S_c$
+Data: $S=\{(x_1,y_1),…,(x_n,y_n)\},y_i \in \{1,…,c\}$, where $c$ is the number of classes. 
+1. Gini impurity: Let $S_k \subset S$ where $S_k=\{(x,y) \in S:y=k\}$ (all inputs with labels $k$) $S=S_1\cup S_2 \cup ..... S_c$
 
-Define: $$p_k = \frac{|S_k|}{|S|} $$ -- fraction of inputs in S with label k
+Define: $$p_k = \frac{|S_k|}{|S|} $$ -- Fraction of inputs in $S$ with label $k$.
 Gini Impurity : 
 $$G(S) = \sum_{k=1}^c p_k(1-p_k)$$
 Gini impurity of a tree:
@@ -646,21 +649,22 @@ $$S_L\cap S_R=\phi $$
 $\frac{|S_L|}{|S|}$ -- fraction of inputs in left substree $\&$
 $\frac{|S_R|}{|S|}$ -- fraction of inputs in right substree
 
-Entropy : Let p1,…,pk be defined as before. We know what we don't want (Uniform Distribution): $p_1=p_2=.....=p_c=\frac{1}{c}$ This is the worst case since each leaf is equally likely. Prediction is random guessing. Define the impurity as how close we are to uniform. 
+Entropy : Let $p_1,…,p_k$ be defined as before. We know what we don't want (Uniform Distribution): $p_1=p_2=.....=p_c=\frac{1}{c}$ This is the worst case since each leaf is equally likely. Prediction is random guessing. Define the impurity as how close we are to uniform. 
 
-Entropy : 
 $$H(S) = \sum_{k=1}^C p_klog(p_k)$$ 
 $$H(S)=p_LH(S_L)+p_RH(S_R)$$
 where $p_L=\frac{|S_L|}{|S|}$,$p_R=\frac{|S_R|}{|S|}$
 
 ### ID3 Algorithm
 
-ID3 algorithm stop under two cases. The first case is that all the data points in a subset of have the same label. If this happens, we should stop splitting the subset and create a leaf with label y. The other case is there are no more attributes could be used to split the subset. Then we create a leaf and label it with the most common y or mean y in case of regression.
+ID3 algorithm stop under two cases. 
+1. The first case is that all the data points in a subset have the same label. If this happens, we should stop splitting the subset and create a leaf with label $y$. 
+1. The other case is there are no more attributes could be used to split the subset. Then we create a leaf and label it with the most common $mode(y)$ in case of classification and $mean(y)$ in case of regression.
 
 ### How to split
 
-Try all features and all possible splits. Pick the split that minimizes impurity (e.g. s>t) where f←feature and t←threshold
-Shape of data : $(N \times d)$. Split between every two points in all the dimensions. Therefore, N-1 splits, d dimensions gives us $d\times(N-1)$ splits. 
+1. Try all features and all possible splits. Pick the split that minimizes impurity (e.g. $s>t$) where $f$←feature and $t$←threshold
+1. In case of continuous features, if shape of data : $(N \times d)$. Split between every two points in all the dimensions. Therefore, $N-1$ splits, $d$ dimensions gives us $d\times(N-1)$ splits. 
 
 ### Drawback
 
@@ -669,17 +673,19 @@ To solve the variance problem, we use bagging and can be used in any algorithm.
 
 ### Incase of Regression
 
-Incase of regression, we compute squared loss instead of gini and entropy. After each split we will compute variance on the left and right trees and split when the weighted variance is low. Stopping criteria would be either the limit set for the depth or split until every leaf contains one datapoint. 
+Incase of regression, we compute squared loss instead of Gini index and Entropy. After each split we will compute variance on the left and right trees and split when the weighted variance is **low**. Stopping criteria would be either the limit set for the depth or split until every leaf contains one datapoint. 
 
 Average squared difference from average label $$L(S)=\frac{1}{|S|}\sum_{(x,y) \in S} (y-\overline{y})^2$$ 
 where $\overline{y_S} =\frac{1}{|S|} \sum_{(x,y)\in S} y$ 
 That is why decision trees are also called as CART (Classification and Regression trees).
 
 ## Bagging
+1. [Cornell Notes](https://www.cs.cornell.edu/courses/cs4780/2021fa/lectures/lecturenote18.html)
+1. [MIT Slides](https://people.csail.mit.edu/dsontag/courses/ml13/slides/lecture13.pdf)
 
 ### Why
 
-To reduce Variance. This can used with all the algorithm if there exists the variance problem. 
+To reduce Variance. This can be used with all the algorithms suffering with variance problem. 
 
 ### Introduction
 
@@ -688,39 +694,58 @@ where $\overline{h(x)}$ is the expected classifier that is average of all the cl
 
 1. To reduce the variance, we need to reduce difference between and  $h_D(x)$ and $\overline{h(x)}$.
 
-1. The weak law of large numbers says (roughly) for i.i.d. random variables xi with mean $\overline{x}$, we have, 
+1. The weak law of large numbers says (roughly) for $I.I.D$ random variables $x_i$ with mean $\overline{x}$, we have, 
 $\frac{1}{m}\sum_{i=1}^m x_i\rightarrow \overline{x} $ as $m\rightarrow \infty$. 
 
-1. Apply this to classifiers: Assume we have m training sets D1,D2,...,Dm drawn from P. Train a classifier on each one and average result: 
-$\widehat{h}=\frac{1}{m}\sum_{i=1}^{m}h_{D_i}\rightarrow \overline{h} $ as $ m \rightarrow \infty$
+1. Apply this to classifiers: Assume we have $m$ training sets $D_1,D_2,...,D_m$ drawn from probability distribution $P$. Train a classifier on each one and average result: 
+    $$\widehat{h}=\frac{1}{m}\sum_{i=1}^{m}h_{D_i}\rightarrow \overline{h} \quad \text{as}  \quad m \rightarrow \infty$$
 
 1. We refer to such an average of multiple classifiers as an ensemble of classifiers.
 
 1. Good news: If $\widehat{h}\rightarrow \overline{h}$ the variance component of the error must also vanish.
 
 1. Problem:
-We don't have m data sets D1,....,Dm, we only have D.
+We don't have $m$ data sets $D_1,....,D_m$, we only have $D$.
 
 
 ### Algorithm
+![bagging](./Images/Bagging.png)
+1. Sample $m$ data sets $D_1,....,D_m$ from $D$ **with replacement**.
+1. For each $D_j$ train a classifier $h_j(x)$
+1. Classify new instance by majority vote / average.
 
-1. Sample m data sets D1,…,Dm from D **with replacement}.
-1. For each Dj train a classifier hj(x)
-1. The final classifier is
-$$h(x)=\frac{1}{m}\sum_{j=1}^{m}h_j(x)$$
+In practice larger $m$ results in a better ensemble, however at some point you will obtain diminishing returns. 
+*Note that setting $m$ unnecessarily high will only slow down your classifier but will not increase the error of your classifier.*
 
-In practice larger m results in a better ensemble, however at some point you will obtain diminishing returns. Note that setting m unnecessarily high will only slow down your classifier but will not increase the error of your classifier.
+**Math**
 
+Each data point has probability ${(1 – 1/n)}^n$
+of being selected as test data. [Proof](https://juanitorduz.github.io/bootstrap/)
+1. What is the probability that the first bootstrap observation is not the $j^{th}$ observation from the original sample?
+    * As the probability of selecting a particular $x_j$ from the set $x_1, x_2,...,x_n$, is $1/n$ then the desired probability is $(1 – 1/n)$. 
+1. What is the probability that the second bootstrap observation is not the $j^{th}$ observation from the original sample?
+    * It would be $(1 – 1/n) \times (1 – 1/n)$ because the selections are independent.
+1. If we are sampling $n$ times, then probability of $j^th$ observation not being part of the dataset would ${(1 – 1/n)}^n$. 
+
+Training data = $1- {(1 – 1/n)}^n$ of the original data
 ### Advantages
 
 1.  Easy to implement
 1.  Reduces variance. 
 1.  As the prediction is an average of many classifiers, we obtain a mean score and variance. Latter can be interpreted as the uncertainty of the prediction.
-1.  No need to split the train set into train and val further. The idea is that each training point was not picked and all the data sets Dk. If we average the classifiers hk of all such data sets, we obtain a classifier (with a slightly smaller m) that was not trained on (xi,yi) ever and it is therefore equivalent to a test sample. If we compute the error of all these classifiers**(which doesn't contain that particular point)}, we obtain an estimate of the true test error. The beauty is that we can do this without reducing the training set. We just run bagging as it is intended and obtain this so called out-of-bag error for free.
+1.  No need to split the train set into training and validation further. The idea is that each training point was not picked in all the data sets $D_k$. If we average the classifiers $h_k$ of all such data sets, we obtain a classifier (with a slightly smaller $m$) that was not trained on $(x_i,y_i)$ ever and it is therefore equivalent to a test sample. If we compute the error of all these classifiers **which doesn't contain that particular point**, we obtain an estimate of the true test error. The beauty is that we can do this without reducing the training set. We just run bagging as it is intended and obtain this so called out-of-bag error for free.
 
-### Disadvantages
+### How do we justify having duplicates in the dataset when bagging, given that duplicates can cause bias towards duplicated observations over single observations in most models?
 
-Leads to Overfitting.
+[Quora Link](https://www.quora.com/How-do-we-justify-having-duplicates-in-the-dataset-when-bagging-given-that-duplicates-can-cause-bias-towards-duplicated-observations-over-single-observations-in-most-models)
+
+Having duplicates is actually desirable. Note that bagging is an ensemble technique — you sample multiple datasets from the original dataset, and fit a model to each of these new datasets.
+
+When these new training sets contain duplicates, the corresponding model puts more weight on getting these examples correct. So, different models will focus on different training points, and when you take a combination of all of them, you’re likely to get a better result than that from a model which is trying to focus on all the data at once.
+
+If you have sufficiently many new datasets, each training point will be duplicated with equal probability, so you are not changing the distribution of data.
+
+
 
 ## Random Forest
 
@@ -729,23 +754,21 @@ A Random Forest is essentially nothing else but bagged decision trees, with a sl
 ### Algorithm
 
 1. The algorithm works as follows:
-Sample m data sets D1,…,Dm from D **with replacement}.
-1. For each $D_j$ train a full decision tree $h_j()$ $(depth_{max}=\infty)$   with one small modification: before each split randomly subsample $k \leq d$ features (**without replacement}) and only consider these for your split. (This further increases the variance of the trees.)
+Sample $m$ data sets $D_1,…,D_m$ from $D$ **with replacement**.
+1. For each $D_j$ train a full decision tree $h_j$ $(depth_{max}=\infty)$   with one small modification: before each split randomly subsample $k \leq d$ features (**without replacement**) and only consider these for your split. (This further increases the variance of the trees.)
 1. The final classifier is $$h(x)=\frac{1}{m}\sum_{j=1}^{m}h_j(x)$$
 
 ### Advantages
 
-1. The RF only has two hyper-parameters, m and k. It is extremely insensitive to both of these. A good choice for k is $k=\sqrt{d}$ (where d denotes the number of features). You can set m as large as you can afford.
+1. The RF only has two hyper-parameters, $m$ and $k$. It is extremely insensitive to both of these. A good choice for $k$ is $k=\sqrt{d}$ (where $d$ denotes the number of features). 
+
 1. Decision trees do not require a lot of preprocessing. For example, the features can be of different scale, magnitude, or slope. This can be highly advantageous in scenarios with heterogeneous data, for example the medical settings where features could be things like blood pressure, age, gender, ..., each of which is recorded in completely different units.
 
-### Why would we sample features **without replacement ?
+### Why would we sample features without replacement and data points with replacement ?
 
-At each node, features are sampled without replacement. Sampling with replacement would **effectively** reduce the number of features sampled at each split, because the best split among some feature is the same for that feature sampled a second time.
-
-Across the entire tree, you might choose the same feature more than once. This is because information about previous splits in no way informs how subsequent splits are chosen. Splitting multiple times on the same feature can be necessary to model relationships which are not step functions with a single step. And, why would you split on the same feature twice?
 
 ## Boosting
-
+[Cornell Notes](https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote19.html)
 ### Intuition
 
 Just as humans learn from their mistakes and try not to repeat them further in life, the Boosting algorithm tries to build a strong learner (predictive model) from the mistakes of several weaker models (Weak learner : Classifier better than random guess i.e. may be coin tossing). You start by creating a model from the training data. Then, you create a second model from the previous one by trying to reduce the errors from the previous model. Models are added sequentially, each correcting its predecessor, until the training data is predicted perfectly or the maximum number of models have been added.
@@ -756,12 +779,11 @@ Boosting basically tries to reduce the bias error which arises when models are n
 
 1.  AdaBoost (Adaptive Boosting)
 1.  Gradient Tree Boosting
-1.  XGBoost
 
-### Maths behind Boosting
+### Maths behind Boosting (Gradient descent in functional space)
 
-Create ensemble classifier $H_T(x) = \sum_{t=1}^T \alpha_t h_t(x)$. This ensemble classifier is built in an iterative fashion. In iteration t, we add the classifier $\alpha_t h_t(x)$ to the ensemble. At test time we evaluate all classifier and return the weighted sum. 
-\par
+Create ensemble classifier $H_T(x) = \sum_{t=1}^T \alpha_t h_t(x)$. This ensemble classifier is built in an iterative fashion. In iteration $t$, we add the classifier $\alpha_t h_t(x)$ to the ensemble. At test time we evaluate all classifier and return the weighted sum. 
+
 The process of constructing such an ensemble in a stage-wise fashion is very similar to gradient descent. However, instead of updating the model parameters in each iteration, we add functions to our ensemble. 
 Let $l$ denote a (convex and differentiable) loss function. With a little abuse of notation we write
 $$l(H)=\frac{1}{n}\sum_{t=1}^n l(H(x_i),y_i)$$
@@ -773,12 +795,12 @@ Once $h_{t+1}$ has been found, we add it to our ensemble, i.e. $$H_{t+1} := H_t 
 
 How can we find such $h\in H$ ?
 
-Answer: Use gradient descent in function space. Given H, we want to find the step-size $\alpha$ and (weak learner) h to minimize the loss $l(H+\alpha h)$. Use Taylor Approximation on $l(H+\alpha h)$
+Answer: Use gradient descent in function space. Given $H$, we want to find the step-size $\alpha$ and (weak learner) $h$ to minimize the loss $l(H+\alpha h)$. Use Taylor Approximation on $l(H+\alpha h)$
 
 $$l(H +\alpha h) \approx l(H)+ \alpha <\nabla l(H), h>.$$
 
-This approximation (of l as a linear function) only holds within a small region around l(H). As long as $\alpha$ is small. We therefore fix it to a small constant (e.g.
-$\alpha\approx 0.1$). With the step-size $\alpha$ fixed, we can use the approximation above to find an almost optimal h:
+This approximation (of $l$ as a linear function) only holds within a small region around $l(H)$. As long as $\alpha$ is small. We therefore fix it to a small constant (e.g.
+$\alpha\approx 0.1$). With the step-size $\alpha$ fixed, we can use the approximation above to find an almost optimal $h$:
 Check the pseduo code ![anyboost](./Images/Anyboost.png)
 
 ### My comments
@@ -786,46 +808,58 @@ Check the pseduo code ![anyboost](./Images/Anyboost.png)
 Generally, in case of gradient descent, we move in the opposite direction of gradient $\partial L / \partial H(\theta)$. Similarly, here we are training a extra model classifier whose predictions point the direction opposite to the gradient ($\partial l(H) / \partial H_t$), so that, the loss decreases and Overall predictions get closer the original (ground truth) values.  
 
 ## Gradient Boosted Regression Tree(GBRT)
-In order to use regression trees for gradient boosting, we must be able to find a tree h() that maximizes $h=argmin_{h\in H} \sum^n_{i=1} r_i.h(x_i)$ where $r_i=\frac{\partial l}{\partial H(x_i)}$.
-\par
+In order to use regression trees for gradient boosting, we must be able to find a tree $h$ that maximizes $h=argmin_{h\in H} \sum^n_{i=1} r_i.h(x_i)$ where $r_i=\frac{\partial l}{\partial H(x_i)}$.
+
 If the loss function $l$ is the squared loss, i.e. $$l(H)=\frac{1}{2}\sum^n_{i=1}(H(x_i) - y_i)^2$$
 , then it is easy to show that $$t_i= -\partial l / \partial H(x_i)=y_i - H(x_i)$$
-which is simply the residual, i.e. r is the vector pointing from y to H. However, it is important that you can use any other differentiable and convex loss function $l$ and the solution for your next weak learner h() will always be the regression tree minimizing the squared loss.
+which is simply the residual, i.e. $r$ is the vector pointing from $y$ to $H$. However, it is important that you can use any other differentiable and convex loss function $l$ and the solution for your next weak learner $h$ will always be the regression tree minimizing the squared loss.
 
 ### My comments
-In case of regression task and mean squared error, $\frac{\nabla l(H)}{\nabla H_t} = H_t(x_i) - y_i$. We are training a regressor which minimizes the product $(H_t(x_i) - y_i).h$. Hence, we are finding the direction of $H_t(x_i) - y_i$ and moving opposite to it (closer to $y_i$) which is what we want. 
+In case of regression task and mean squared error loss, $\frac{\nabla l(H)}{\nabla H_t} = H_t(x_i) - y_i$. We are training a regressor which minimizes the product $(H_t(x_i) - y_i).h$. Hence, we are finding the direction of $H_t(x_i) - y_i$ and moving opposite to it (closer to $y_i$) which is what we want. 
+
+### Example 
+[Medium Article](https://towardsdatascience.com/all-you-need-to-know-about-gradient-boosting-algorithm-part-1-regression-2520a34a502)
+
+Suppose we are trying to train a
+ GBRT model to fit the particular data. 
+![scatter](./Images/scatterplot.webp)
+
+Initially, we try to train a model which predicts the mean of the data for every $x$. As it is weak learner, we add more and more weak learners to predict the $y$ accurately. In the below image, we can find the predictions of the model as we keep adding more weak learners or decision stumps. 
+
+![gbrt](./Images/GBRT.webp)
+
+## Gradient Boosting for classification
+
+[Paperspace Blog](https://blog.paperspace.com/gradient-boosting-for-classification/)
 
 ## AdaBoost
+
+1. [Cornell Notes](https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote19.html)
+
+1. [Stats Quest Video](https://www.youtube.com/watch?v=LsK-xG1cLYA&t=1023s) -- Watch this video before reading the notes below
+
+1. [Toronto Handout Notes](https://www.cs.toronto.edu/~mbrubake/teaching/C11/Handouts/AdaBoost.pdf)
+
 ### Introduction
-More weight is assigned to the incorrectly classified samples so that they're classified correctly in the next decision stump. Weight is also assigned to each classifier based on the accuracy of the classifier, which means high accuracy = high weight!
+
+Two main ideas : 
+
+1. More weight is assigned to the incorrectly classified samples so that they're classified correctly in the next decision stump. 
+
+1. Weight is also assigned to each classifier based on the accuracy of the classifier, which means high accuracy = high weight!
+
+Problem
 
 1.  Classification : $y_i \in \{+1,-1\}$
 1.  Weak learners: $h \in H$ are binary, $h(x_i)\in \{-1,+1\}$, $\forall x$.
-1.  Step-size : We perform line-search to obtain best step-size $\alpha$.
+1.  Step-size : We perform line-search to obtain best step-size $\alpha$. This determines how much weightage has to be given to that particular stump. 
 
 1.  Loss function: Exponential loss  $l(H)=\sum^n_{i=1}e^{-y_i H(x_i)}$.
+1. N : Total number of samples
 
 ### Steps 
 
-![Adaboost](./Images/Adaboost.png)
-
-1. First we compute the gradient $r_i=\partial l/\partial H(x_i)=-y_i e^{-y_i.H(x_i)}$.
-
-For notational convenience (and for reason that will become clear in a little bit), let us define $w_i=\frac{1}{Z}e^{-y_i.H(x_i)}$, where $Z=\sum^n_{i=1}e^{-y_i.H(x_i)}$ is a normalizing factor so that $\sum^n_{i=1}w_i=1$.
-
-Note that the normalizing constant Z is identical to the loss function. Each weight $w_i$ 
-therefore has a very nice interpretation. It is the relative contribution of the training point $(x_i,y_i)$ towards the overall loss.
-Let us denote this weighted classification error as $\epsilon =\sum_{i:h(x_i)y_i=-1} w_i$. So for AdaBoost, we only need a classifier that can take training data and a distribution over the training set (i.e. normalized weights $w_i$ for all training samples) and which returns a classifier $h \in H$ that reduces the weighted classification error of these training samples.
-
-1.  When we are given l, H, h, we would like to solve the following optimization problem:  $$\alpha = argmin_\alpha l(H+\alpha h) 
-= argmin_\alpha \sum^n_{i=1} e^{-y_i[H(x_i)+ \alpha h(x_i)]}$$
-Taking the derivative of the above equation and equating to zero gives us the value of optimal $\alpha$. 
-
-1.  Optimal $\alpha$ is found to be $$\alpha = \frac{1}{2} \ln \frac{1-\epsilon}{\epsilon}$$. 
-
-1. After you take a step, i.e. $H_{t+1}=H_t + \alpha h$, you need to re-compute all the weights and then re-normalize.
-The update rule would be 
-$$w_i := w_i . \frac{e^{-\alpha h(x_i).y_i}}{2\epsilon(1-\epsilon)}$$
+![Adaboost](./Images/Adaboostpseudocode.png)
 
 
 
@@ -833,6 +867,6 @@ $$w_i := w_i . \frac{e^{-\alpha h(x_i).y_i}}{2\epsilon(1-\epsilon)}$$
 
 ### Parametric vs Non-parametric algorithms
 
-1. A parametric algorithm is one that has a constant set of parameters, which is **independent} of the number of training samples. You can think of it as the amount of much space you need to store the trained classifier. An examples for a parametric algorithm is the Perceptron algorithm, or logistic regression. Their parameters consist of w,b, which define the separating hyperplane. The dimension of w depends on the dimension of the training data, but not on how many training samples you use for training.
+1. A parametric algorithm is one that has a constant set of parameters, which is **independent** of the number of training samples. You can think of it as the amount of much space you need to store the trained classifier. An examples for a parametric algorithm is the Perceptron algorithm, or logistic regression. Their parameters consist of $w,b$, which define the separating hyperplane. The dimension of $w$ depends on the number of dimensions of the training data, but not on how many training samples you use for training.
 
-1. In contrast, the number of parameters of a non-parametric algorithm scales as a function of the training samples. An example of a non-parametric algorithm is the k-Nearest Neighbors classifier. Here, during "training" we store the entire training data -- so the parameters that we learn are identical to the training set and the number of parameters (the storage we require) grows linearly with the training set size.
+1. In contrast, the number of parameters of a non-parametric algorithm scales as a function of the training samples. An example of a non-parametric algorithm is the $K$-Nearest Neighbors classifier. Here, during "training" we store the entire training data -- so the parameters that we learn are identical to the training set and the number of parameters (the storage we require) grows linearly with the training set size.
