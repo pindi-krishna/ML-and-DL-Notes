@@ -1,4 +1,5 @@
 # Neural Networks
+
 # Introduction
 #### Neuron
 Single neuron == linear regression without applying activation(perceptron). Followed by an activation function gives rise to linear/logistic regression. 
