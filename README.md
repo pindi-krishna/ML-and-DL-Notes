@@ -1,12 +1,11 @@
 # ML-and-DL-Notes
+
 My ML and DL notes written from various blogs, books and YouTube lectures. In this notes, I will dump all the concepts I learn in this space over time. 
 
 # Table of contents 
 
 1. [Machine Learning](./Machine-Learning/README.md)
     1. [Supervised ML](./Machine-Learning/Supervised-ML/README.md)
-        1. [KNN](#knn-algorithm)
-        1. [Perceptron Algorithm](#Perceptron-Algorithm)
     1. [Unsupervised ML](./Machine-Learning/Unsupervised-ML/README.md)
 2. [Deep Learning](./Deep-Learning/README.md)
 3. [Computer Vision](./Computer-Vision/README.md)
