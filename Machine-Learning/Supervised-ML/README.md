@@ -1,5 +1,3 @@
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
 # Supervised Machine Learning Algorithms
 
 The goal is, given a training set, to learn a function $h : X \rightarrow Y$ so that $h(x)$ is a “good” predictor for the corresponding value of $y$. For historical reasons, this function $h$ is called a hypothesis.
@@ -12,14 +10,14 @@ Similar Inputs have similar outputs which imply that data points of various clas
 
 ### Classification rule
 
-For a test input x, assign the most common label amongst its k most similar training inputs.
+For a test input $x$, assign the most common label amongst its $k$ most similar training inputs.
 
 ### What distance function should we use to find neighbors?
 
 The k-nearest neighbor classifier fundamentally relies on a distance metric. The better that metric reflects label similarity, the better the classified will be. 
 
 1. Minkowski distance between two points $x$ and $x'$: $$D(x, x') = {(\sum_{i=1}^d {(x'_i - x_i)^p})}^\frac{1}{p}$$
-where '$d$ represents the number of dimensions. The most common choice is the 
+where $d$ represents the number of dimensions. The most common choice is the 
     1.  $p = 1$  (Manhattan distance)
     1.  $p = 2$  (Euclidean distance)
     1.  $p = \infty$ (Max of difference between coordinates in each dimension)
@@ -32,26 +30,25 @@ Generally, incase of classification of documents(bag of words), then it is bette
 
 ### How to choose k
 
-1.  Generally we go for odd k. 
-1.  In case of multi class classification with four classes C1, C2, C3, C4 with distribution of (say k = 7) nearest neighbors (3,3,1,0), If C1 and C2 have same number of neighbors, then we can check all its majority classes and assign that class which contains the closest point.  
+1.  Generally we go for odd $K$. 
+1.  In case of multi class classification with four classes $C1, C2, C3, C4$ with distribution of (say $K = 7$) nearest neighbors $(3,3,1,0)$, If $C1$ and $C2$ have same number of neighbors, then we can check all its majority classes and assign that class which contains the closest point.  
 
-### What if $k = n$
+### What if $K = n$
 
-Then the output of all test points will be same as major class in the given data set irrespective of its input. Therefore, never ever choose $k = n$.
+Then the output of all test points will be same as major class in the given data set irrespective of its input. Therefore, never ever choose $K = n$.
 
-### What if $k = 1$
+### What if $K = 1$
 
-1.  The 1-NN could be an outlier of some another class. Then it miss-classifies the point. Therefore, its better not to choose. 
-1.  As $n\rightarrow \infty$, the 1-NN(1 Nearest Neighbor) classifier is only a factor 2 worse than the best possible classifier. 
+1.  The $1-NN$ could be an outlier of some another class. Then it miss-classifies the point. Therefore, its better not to choose. 
+1.  As $n\rightarrow \infty$, the $1-NN$($1$ Nearest Neighbor) classifier is only a factor $2$ worse than the best possible classifier. 
 
-1.  Let $x_{NN}$ be the nearest neighbor of our test point $x_t$. As $n\rightarrow \infty, 
-dist(x_{NN},x_{t}) \rightarrow 0, (i.e.) x_{NN} \rightarrow x_t$. (This means the nearest neighbor is identical to $x_t$.) You return the label of $x_{NN}$. What is the probability that this is not the label of $x_t$? (This is the probability of drawing two different label of x). Solving this probability, we reach to the above conclusion. 
+1. Let $x_{NN}$ be the nearest neighbor of our test point $x_t$. As $n\rightarrow \infty, dist(x_{NN},x_{t}) \rightarrow 0, (i.e.) x_{NN} \rightarrow x_t$. (This means the nearest neighbor is identical to $x_t$.) You return the label of $x_{NN}$. What is the probability that this is not the label of $x_t$? (This is the probability of drawing two different label of $x$). Solving this probability, we reach to the above conclusion. 
 
 ### Curse of Dimensionality
 
 1.  As the dimension $d$ of the input increases, the distance between two points in the space also increases. 
-1.  So as $d >> 0$ almost the entire space is needed to find the 10-NN. 
-1.  This breaks down the k-NN assumptions, because the k-NN are not particularly closer (and therefore more similar) than any other data points in the training set. Why would the test point share the label with those k-nearest neighbors, if they are not actually similar to it?
+1.  So as $d >> 0$ almost the entire space is needed to find the $10$-NN. 
+1.  This breaks down the KNN assumptions, because the $KNN are not particularly closer (and therefore more similar) than any other data points in the training set. Why would the test point share the label with those k-nearest neighbors, if they are not actually similar to it?
 1.  Dont try to visualize the above point as it involves multiple dimensions greater than three. Do the math.
 1.  Note : In real life, points are not uniformly distributed. Points mostly lie on the complex manifolds and may form clusters. That's why KNN may work sometimes even for higher dimensions. 
 
@@ -61,10 +58,10 @@ Pros :
 1.  Easy and simple 
 1.  Non parametric 
 1.  No assumption about data. 
-1.  Only two choices (k values and distance metric).
+1.  Only two choices ($k$ values and distance metric).
 
 Cons : 
-Computation time : O(N.d) where N -> #training samples and d -> #dimensions.
+Computation time : $O(N.d)$ where $N$ -> #training samples and $d$ -> #dimensions.
 
 ### K Dimensional Tress (KD Trees)
 
@@ -93,7 +90,6 @@ Computation time : O(N.d) where N -> #training samples and d -> #dimensions.
     1.  Curse of Dimensionality makes KD-Trees ineffective for higher number of dimensions. May not work better if dimensions are greater than 10. 
     1.  All splits are axis aligned (all dividing hyperplanes are parallel to axis).
 
-
 1.  Approximation: Limit search to $m$ leafs only. 
 
 ### Ball Trees
@@ -110,14 +106,14 @@ Computation time : O(N.d) where N -> #training samples and d -> #dimensions.
 
 1.  Ball-Tree Use : 
     1.  Same as KD-Trees
-    1.  Slower than KD-Trees in low dimensions (d≤3) but a lot faster in high dimensions. Both are affected by the curse of dimensionality, but Ball-trees tend to still work if data exhibits local structure (e.g. lies on a low-dimensional manifold).
+    1.  Slower than KD-Trees in low dimensions $(d \leq 3)$ but a lot faster in high dimensions. Both are affected by the curse of dimensionality, but Ball-trees tend to still work if data exhibits local structure (e.g. lies on a low-dimensional manifold).
 
 ### Locally sensitive hashing (LSH) 
     
-1. Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes $(h_1, h_2, h_3, ........., h_k)$. 
+1. Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes $(h_1, h_2, h_3, .........,h_k)$. 
 1. Compare $x$ to only those $\frac{n}{2^k}$ points in that particular region. 
 1. Complexity : $O(Kd +  d \frac{n}{2^k})$. 
-    1. Kd : To find out which point belongs to which region. For that we need to check with each hyperplane and find that. 
+    1. $Kd$ : To find out which point belongs to which region. For that we need to check with each hyperplane and find that. 
     1. $d\frac{n}{2^k}$ : Finding the NN by comparing d-dimensional point with $\frac{n}{2^k}$ points. 
 1. Limitations : Choosing the right set and number of hyperplanes are really important. Try a couple of different initializations. Based on the way we choose the hyperplanes, we may miss out the main neighbors and misclassify the point. 
     
@@ -139,10 +135,10 @@ The pseudo code of the algorithm is given below.
 
 Here, we include bias in the weight vector itself by adding an extra dimension of constant 1 in the input. 
 
-The update $w = w + yx$ moves the w vector(hyperplane) in direction of x. Proof : 
-After updating the w, $(w + yx_i)^T{x_i} = w^Tx + y{x^T}x$. Let this equation be eq(2). Here two cases : 
+The update $w = w + yx$ moves the w vector(hyperplane) in direction of $x$. Proof : 
+After updating the $w$, $(w + yx_i)^T{x_i} = w^Tx + y{x^T}x$. Let this equation be eq(2). Here two cases : 
 
-1.  In case of false positive : y = 0, eq(1) > 0, we need to decrease its value so that it becomes less than 0. By updating the weight vector, it reduces the eq(1) by $x^T.x$ amount. 
+1.  In case of false positive : $y = 0$, $eq(1) > 0$, we need to decrease its value so that it becomes less than $0$. By updating the weight vector, it reduces the eq(1) by $x^T.x$ amount. 
 1.  Quite opposite is the case with false negative. 
 
 
@@ -160,20 +156,20 @@ If the data is linearly separable, then the algo will converge definitely, other
 
 ### Intro
 
-1.  Algorithms that try to learn $p(y|x)$ directly (such as logistic regression),
+1.  Algorithms that try to learn $P(y|x)$ directly (such as logistic regression),
 or algorithms that try to learn mappings directly from the space of inputs $X$ to the labels $\{0, 1\}$, (such as the perceptron algorithm) are called discriminative learning algorithms.
-1.  Algorithms that instead try to model $p(x|y)$ are generative learning algorithms.
-1.  For instance, if $y$ indicates whether an example is a dog $(0)$ or an elephant $(1)$, then $p(x|y = 0)$ models the distribution of dogs features, and $p(x|y = 1)$ models the distribution of elephants features.
+1.  Algorithms that instead try to model $P(x|y)$ are generative learning algorithms.
+1.  For instance, if $y$ indicates whether an example is a dog $(0)$ or an elephant $(1)$, then $P(x|y = 0)$ models the distribution of dogs features, and $P(x|y = 1)$ models the distribution of elephants features.
 
 
 ### Gaussian Discriminant Analysis
 
-1.  In this model, we’ll assume that $p(x|y)$ is distributed according to a multivariate normal distribution.
+1.  In this model, we’ll assume that $P(x|y)$ is distributed according to a multivariate normal distribution.
 
-1.  This Algorithm make use of Bayes theorem to model $p(y|x)$. 
+1.  This Algorithm make use of Bayes theorem to model $P(y|x)$. 
     $$ p(x; \mu, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))$$ 
     Here, $\Sigma$ = Covariance of X. 
-    Here, $\mu$ and $\Sigmais computed for each class inputs separately.
+    Here, $\mu$ and $\Sigma$ is computed for each class inputs separately.
     $$y \approx Bernoulli(\phi)$$ 
 
     $$x|y = 0 \approx N(\mu_0, \Sigma_0)$$ 
@@ -188,9 +184,9 @@ or algorithms that try to learn mappings directly from the space of inputs $X$ t
 by 
     $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i), y(i); \phi, \mu_0, \mu_1, \Sigma_0, \Sigma_1)$$
 
-    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i)| y(i); \phi, \mu_0, \mu_1, \Sigma_0, \Sigma_1) \times p(y(i);\phi)$$ 
+    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i)| y(i); \phi, \mu_0, \mu_1, \Sigma_0,\Sigma_1)\times p(y(i);\phi)$$ 
     
-    By maximizing $l$ with respect to the parameters, we find the maximum likelihood estimate of the parameters (see problem set 1) to be:
+    By maximizing $l$ with respect to the parameters, we find the maximum likelihood estimate of the parameters (see problem set $1$) to be:
 
     $$\phi =\frac{1}{m}\sum_{i=1}^m 1\{y(i) = 1\}$$
 
@@ -198,10 +194,10 @@ by
 
     $$\mu_1 = \frac{\sum^m_{i=1} 1\{y(i) = 1\}x(i)}{\sum^m_{i=1} 1\{y(i) = 1\}}$$
 
-$$ \Sigma_{y^(i)} = \frac{1}{m} \sum^m_{i=1} (x(i) - \mu_{y^(i)})(x(i) - \mu_{y^(i)})^T $$
+$$\Sigma_{y^(i)} = \frac{1}{m} \sum^m_{i=1} (x(i) - \mu_{y^(i)})(x(i) - \mu_{y^(i)})^T $$
 
 1. **GDA vs Logistic Regression** : 
-GDA works best if X distribution is multivariate. But Logistic Regression works best even for other distributions also. 
+GDA works best if $X$ distribution is multivariate. But Logistic Regression works best even for other distributions also. 
 
 
 ## Naive Bayes Classifier
@@ -216,7 +212,7 @@ GDA works best if X distribution is multivariate. But Logistic Regression works 
 1.  Naive Bayes works best if we have very less data. 
 1.  It tries to model the data and finds out the parameters for the distributions of the classes and based on those parameters, it predicts the new data point.
 1.  This is extremely fast because there is no loop or anything. Just need to find out the parameters for the class distributions.
-1.  Naive Bayes is a linear classifier. You can find that proof in [Cornell lec 11](https://www.youtube.com/watch?v=GnkDzIOxfzI) in first 10 mins. 
+1.  Naive Bayes is a linear classifier. You can find that proof in [Cornell lec 11](https://www.youtube.com/watch?v=GnkDzIOxfzI) in first $10$ mins. 
 
 ### Assumptions
 

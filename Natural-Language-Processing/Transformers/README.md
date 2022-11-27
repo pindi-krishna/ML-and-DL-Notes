@@ -1,8 +1,8 @@
 # Transformers 
-1. [Main Source](http://jalammar.github.io/illustrated-transformer/) 
-1. [Other source](http://peterbloem.nl/blog/transformers)  
-1. [Implementation with explanation](http://nlp.seas.harvard.edu/2018/04/03/attention.html) 
-1. [Paper](https://arxiv.org/abs/1706.03762)
+1. [Jay Alammar Blog](http://jalammar.github.io/illustrated-transformer/) 
+1. [Reference 2](http://peterbloem.nl/blog/transformers)  
+1. [Harvard Implementation](http://nlp.seas.harvard.edu/2018/04/03/attention.html) 
+1. [Attention is all you need Paper](https://arxiv.org/abs/1706.03762)
 
 ## Introduction
 1. The Transformer – a model that uses attention to boost the speed with which these neural machine translation models can be trained.
@@ -10,19 +10,19 @@
     1. Positional encoding component
     1. Encoder (Self-Atttention and Feed Forward)
     1. Decoder (Self-Attention, Encoder-Decoder Attention, Feed Forward)
-1. A simple tansformer with 1 encoder and 1 decoder can bee seen in image 
+1. A simple tansformer with $1$ encoder and $1$ decoder can bee seen in image 
 ![transformer](./Images/transformer-architecture.png)
 
 ## Encoder and Decoder
 ### Encoder
 
-1. The encoder is composed of a stack of N = 6 identical layers. Each layer has two sub-layers. 
+1. The encoder is composed of a stack of $N = 6$ identical layers. Each layer has two sub-layers. 
     1. Multi-head self-attention mechanism, 
     2. A simple, position-wise fully connected feed-forward network. 
 
-1. A residual connection has been employed around each of the two sub-layers, followed by layer normalization. That is, the output of each sub-layer is LayerNorm(x + Sublayer(x)), where Sublayer(x) is the function implemented by the sub-layer itself. 
+1. A residual connection has been employed around each of the two sub-layers, followed by layer normalization. That is, the output of each sub-layer is $LayerNorm(x + Sublayer(x))$, where $Sublayer(x)$ is the function implemented by the sub-layer itself. 
 
-1. To facilitate these residual connections, all sub-layers in the model, as well as the embedding layers, produce outputs of dimensions = 512.
+1. To facilitate these residual connections, all sub-layers in the model, as well as the embedding layers, produce outputs of dimensions = $512$.
 
 ![Encoder](./Images/Encoder.png)
 
@@ -151,7 +151,7 @@ This improves the performance of the attention layer in two ways:
 
 1. There are many choices of positional encodings, learned and fixed. However, In this work, they used sine and cosine functions of different frequencies: $$PE(pos,2i) = sin(pos/10000^{2i}/dmodel)$$ $$PE(pos,2i+1) = cos(pos/10000^{2i}/dmodel)$$ where $pos$ is the position and $i$ is the dimension. 
 
-1. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from 2π to 10000·2π. 
+1. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from $2\pi$ to $10000·2\pi$. 
 
 1. They chose this function because they hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $P E_{pos+k}$ can be represented as a linear function of $PE_{pos}$.
 
@@ -163,9 +163,9 @@ This is the final architecture.
 
 1. The decoder stack outputs a vector of floats. The Linear layer is a simple fully connected neural network that projects the vector produced by the stack of decoders, into a much, much larger vector called a logits vector.
 
-1. Let’s assume that our model knows 10,000 unique English words (our model’s “output vocabulary”) that it’s learned from its training dataset. This would make the logits vector 10,000 cells wide – each cell corresponding to the score of a unique word. That is how we interpret the output of the model followed by the Linear layer.
+1. Let’s assume that our model knows $10000$ unique English words (our model’s “output vocabulary”) that it’s learned from its training dataset. This would make the logits vector $10000$ cells wide – each cell corresponding to the score of a unique word. That is how we interpret the output of the model followed by the Linear layer.
 
-1. The softmax layer then turns those scores into probabilities (all positive, all add up to 1.0). The cell with the highest probability is chosen, and the word associated with it is produced as the output for this time step.
+1. The softmax layer then turns those scores into probabilities (all positive, all add up to $1.0$). The cell with the highest probability is chosen, and the word associated with it is produced as the output for this time step.
 
 **This is how the transformer model is used for neural machine translation task**. 
 
