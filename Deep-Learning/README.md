@@ -763,7 +763,8 @@ The obvious case where you'd shuffle your data is if your data is sorted by thei
 
 ## Batch Normalization
 
-[Source](https://mmuratarat.github.io/2019-03-09/batch-normalization)
+1. [Reference](https://mmuratarat.github.io/2019-03-09/batch-normalization)
+1. [Paper](https://arxiv.org/pdf/1502.03167v3.pdf)
 
 ### Why
 
@@ -773,45 +774,38 @@ Typically, we train model in mini-batches. Initially, we make sure the input lay
 
 Batch Normalization will let the network decide what is the best distributions for it instead of forcing it to have zero mean and unit variance. This is usually applied with mini-batches. This is a co-variate shift. Training the model on different possible distributions of data. 
 
-### Parameters
-1. $\mu_\phi \in R^{1 \times D}$ : is the empirical mean of each input dimension across the whole mini-batch.
-1. $\sigma_\phi \in R^{1 \times D}$ 
- is the empirical standard deviation of each input dimension across the whole mini-batch. N is the number of instances in the mini-batch
-1. $\hat{x_i}$ is the zero-centered and normalized input.
-1. $\gamma \in R^{1 \times D}$ is the scaling parameter for the layer.
-1. $\beta \in R^{1 \times D}$
- is the shifting parameter (offset) for the layer.
-1. $\epsilon$ is added for numerical stability, just in case $\sigma_\phi^2$ turns out to be $0$ for some estimates. This is also called a smoothing term.
-1. $y_i$ is the output of the BN operation. It is the scaled and shifted version of the inputs. 
-$y_i=BN_{\gamma, \beta}(xi)$.
 
 ### Algorithm
-For a given input batch $\phi$ of size $(N,F)$ going through a hidden layer of size $D$, some weights $w$ of size $(F,D)$ and a bias $b$ of size $(D)$, we first do an affine transformation $X=Z⋅W+b$ where $X$ contains the results of the linear transformation (size $(N,D)$).
-Note that, all the expressions above implicitly assume broadcasting as $X$ is of size $(N,D)$ and both $\mu_\phi$ and ${\sigma^2}_\phi$ have size equal to $D$.
+Consider a mini-batch $B$ of size $m$. Since the normalization is applied to each activation independently, let us focus on a particular activation $x(k)$ and omit $k$ for clarity. We have $m$ values of this activation in the mini-batch. $B = {x_{1...m}}$.
+Let the normalized values be $x_{1...m}$, and their linear transformations be $y1...m$. We refer to the transform 
+    $$BN{\gamma,\beta} : x_{1...m} \rightarrow y_{1...m}$$
+as the Batch Normalizing Transform.
+In the algorithm, ǫ is a constant added to the mini-batch variance for numerical stability.
+![BN](./Images/BN.png)
 
-$$\hat{x_{il}}=\frac{x_{il} - \mu_{\phi l}}{\sqrt{{\sigma^2}_{\phi l} + \epsilon}}$$
-where
-$$\mu_{\phi l}=\frac{1}{N} \sum_{p=1}^N x_{pl}$$
-and
-$${\sigma^2}_{\phi l}=\sum_{p=1}^N \frac{1}{N} (x_{pl} - \mu_{\phi l})^2$$
-with $i=1…,N$ and $l=1,…,D$.
+During training we need to backpropagate the gradi- ent of loss l through this transformation, as well as com- pute the gradients with respect to the parameters of the BN transform.
+![BNBackprop](./Images/BN_gradients.png)
 
-Every component of $\hat{x_i}$ has zero mean and unit variance. However, we want hidden units to have different distributions. In fact, this would perform poorly for some activation functions such as the sigmoid function. Thus, we’ll allow our normalization scheme to learn the optimal distribution by scaling our normalized values by $\gamma$ and shifting by $\beta$.
-
-$$y_i \leftarrow \gamma⋅\hat{x_i} + \beta ≡ BN_{\gamma,\beta}(x_i) \quad \text{(scale and shift)}$$
 **Note**
 1. $\gamma$ and $\beta$ are learnable parameters that are initialized with $\gamma=1$ and $\beta=0$.
 1. Batch Normalization is done individually at every hidden unit. **The pairs ($\gamma^k$, $\beta^k$) are learnt per neuron**
 
+### Batch Normalization in CNNs
+
+1. For convolutional layers, we additionally want the normalization to obey the convolutional property – so that different elements of the same feature map, at different locations, are normalized in the same way. 
+1. To achieve this, we jointly normalize all the activations in a mini-batch, over all locations. 
+1. Let $B$ be the set of all values in a feature map across both the elements of a **mini-batch and spatial locations** – so for a mini-batch of size $m$ and feature maps of size $p \times q$, we use the effective mini-batch of size $\hat{m} = |B| = m \times pq$. We learn a pair of parameters $\gamma(k)$ and $\beta(k)$ per feature map, rather than per activation. 
+1. During inference the BN transform applies the same linear transformation to each activation in a given feature map.
+
 ### Batch normalization at test time
 
-In testing we might need to process examples one at a time. The mean and the variance computed for training batches won't make sense to use in case of of one test sample. We have to compute an estimated value of mean and variance to use it in testing time. 
+Since the means and variances are fixed during inference, the normalization is simply a linear transform applied to each activation. It may further be composed with the scaling by $\gamma$ and shift by $\beta$, to yield a single linear transform that replaces $BN(x)$.
 
 Exponentially weighted “moving average” can be used as global statistics to update population mean and variance:
 $$\mu_{mov} = \alpha \mu_{mov}+(1-\alpha)\mu_\phi$$
 $${\sigma^2}_{mov}==\alpha {\sigma^2}_{mov} + (1-\alpha){\sigma^2}_\phi$$
  
-Here $\alpha$ is the “momentum” given to previous moving statistic, around 0.99, and those with $\phi$ subscript are mini-batch mean and mini-batch variance.
+Here $\alpha$ is the “momentum” given to previous moving statistic, around $0.99$, and those with $\phi$ subscript are mini-batch mean and mini-batch variance.
 
 ### Where to Insert Batch Norm Layers?
 
