@@ -780,7 +780,7 @@ Consider a mini-batch $B$ of size $m$. Since the normalization is applied to eac
 Let the normalized values be $x_{1...m}$, and their linear transformations be $y1...m$. We refer to the transform 
     $$BN{\gamma,\beta} : x_{1...m} \rightarrow y_{1...m}$$
 as the Batch Normalizing Transform.
-In the algorithm, ǫ is a constant added to the mini-batch variance for numerical stability.
+In the algorithm, $\epsilon$ is a constant added to the mini-batch variance for numerical stability.
 ![BN](./Images/BN.png)
 
 During training we need to backpropagate the gradi- ent of loss l through this transformation, as well as com- pute the gradients with respect to the parameters of the BN transform.

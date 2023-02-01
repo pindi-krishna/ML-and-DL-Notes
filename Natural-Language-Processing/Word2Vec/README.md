@@ -94,31 +94,23 @@ As, you can see for Document1 , TF-IDF method heavily penalises the word ‘This
     
     1. We breakdown the way this model works in these steps: 
     1. We generate our one hot word vectors $(x^{(c-m)}, . . . , x^{(c-1)}, x^{(c+1)}, . . . , x^{(c+m)})$
-    for the input context of size m.
+    for the input context of size $m$.
+
     2. We get our embedded word vectors for the context $$(v_{c-m} = Vx^{(c-m)}
     , v_{c-m+1} = Vx^{(c-m+1)}, . . ., v_{c+m} = Vx^{(c+m)})$$
     1. Average these vectors to get 
-    $$v^` = \frac{v_{c-m}+v_{c-m+1}+...+v_{c+m}}{2m}$$
-    1. Generate a score vector $z = Uv^`$
+    $$\hat{v} = \frac{v_{c-m}+v_{c-m+1}+...+v_{c+m}}{2m}$$
+    1. Generate a score vector $z = U\hat{v}$
     1. Turn the scores into probabilities 
-    $y^` = softmax(z)$
-    1. We desire our probabilities generated, $y^`$, to match the true probabilities, y, which also happens to be the one hot vector of the
+    $\hat{y} = softmax(z)$
+    1. We desire our probabilities generated, $\hat{y}$, to match the true probabilities, $y$, which also happens to be the one hot vector of the
     actual word.
     
-1. So now that we have an understanding of how our model would work if we had a V and U, how would we learn these two matrices?
-1. Well, we need to create an objective function. Very often when we are trying to learn a probability from some true probability, we look to information theory to give us a measure of the distance between
-two distributions. Here, we use a popular choice of distance/loss measure, cross entropy $H(\hat{y}, y)$.
+1. So now that we have an understanding of how our model would work if we had a $V$ and $U$, how would we learn these two matrices?
 
-1. The intuition for the use of cross-entropy in the discrete case can be derived from the formulation of the loss function: $$H(\hat{y}, y) = −|V|\sum_{j=1} y_j log({\hat{y}}_j)$$
+1. Well, we need to create an objective function. Very often when we are trying to learn a probability from some true probability, we look to information theory to give us a measure of the distance between two distributions. Here, we use a popular choice of distance/loss measure, cross entropy $H(\hat{y}, y)$.
 
-1. Let us concern ourselves with the case at hand, which is that $y$ is a one-hot vector. Thus we know that the above loss simplifies to simply: 
-    $$H(\hat{y}, y) = −y_i log({\hat{y}}_i)$$
-
-1. In this formulation, $c$ is the index where the correct word’s one hot vector is $1$. We can now consider the case where our prediction was perfect and thus ${\hat{y}}_c = 1$. We can then calculate $H(\hat{y}, y) = -1 log(1) = 0$. 
-
-1. Thus, for a perfect prediction, we face no penalty or loss. Now let us consider the opposite case where our prediction was very bad and thus $\hat{y}_c = 0.01$. As before, we can calculate our loss to be $H(\hat{y}, y) = -1 log(0.01) ≈ 4.605$. 
-
-1. We can thus see that for probability distributions, cross entropy provides us with a good measure of distance.
+1. The intuition for the use of cross-entropy in the discrete case can be derived from the formulation of the loss function: $$H(\hat{y}, y) = −\sum_{j=1}^{|V|} y_j log({\hat{y}}_j)$$
 
 1. We thus formulate our optimization objective as: Minimize $$J = - log P(w_c|w_{c-m}, . . . , w_{c-1}, w_{c+1}, . .w_{c+m})$$
 
@@ -155,9 +147,9 @@ $$minimize J = - log P(w_{c-m}, . . . , w_{c-1}, w_{c+1}, . . . , w_{c+m}|w_c)$$
 The two main model families for learning wordvectors are: 
 
 1. Global matrix factorization methods, such as latent semantic analysis (LSA).
-1. Local context window methods, such as the skip-gram model of Mikolovet al.  
+1. Local context window methods, such as the skip-gram model and CBOW models.  
 
-Currently, both families suffer significant drawbacks.  While methods like LSA efficiently  leverage  statistical  information,  they  do relatively poorly on the word analogy task,  indicating a sub-optimal vector space structure. Methods like skip-gram may do better on the analogy task, but they poorly utilize the statistics of the cor-pus since they train on separate local context windows instead of on global co-occurrence counts. 
+Currently, both families suffer significant drawbacks.  While methods like LSA efficiently  leverage  statistical  information,  they  do relatively poorly on the word analogy task,  indicating a sub-optimal vector space structure. Methods like skip-gram may do better on the analogy task, but they poorly utilize the statistics of the corpus since they train on separate local context windows instead of on global co-occurrence counts. 
 
 **Idea: Why not combine them ?**
 They proposed a specific weighted least squares model that trains on global word-word co-occurrence counts and thus makes efficient use of statistics.

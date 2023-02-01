@@ -28,7 +28,7 @@
 
 ### Decoder
 
-1. The decoder is also composed of a stack of N = 6 identical layers. In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. 
+1. The decoder is also composed of a stack of $N = 6$ identical layers. In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. 
 
 1. Similar to the encoder, residual connections has been employed around each of the sub-layers, followed by layer normalization. Also modified the self-attention sub-layer in the decoder stack to prevent positions from attending to subsequent positions. **This masking, combined with fact that the output embeddings are offset by one position, ensures that the predictions for position $i$ can depend only on the known outputs at positions less than $i$.** This is also called as Masked Self-Attention.
 
@@ -36,19 +36,19 @@
 
 ### Introduction
 
-1. Self-attention is a sequence-to-sequence operation: a sequence of vectors goes in, and a sequence of vectors comes out. Let’s call the input vectors $x_1$, $x_2$…...., $x_t$ and the corresponding output vectors $y_1$, $y_2$…...., $y_t$. The vectors all have dimension k.
+1. Self-attention is a sequence-to-sequence operation: a sequence of vectors goes in, and a sequence of vectors comes out. Let’s call the input vectors $x_1$, $x_2$…...., $x_t$ and the corresponding output vectors $y_1$, $y_2$…...., $y_t$. The vectors all have dimension $k$.
 
 1. We need to score each word of the input sentence against this word. The score determines how much focus to place on other parts of the input sentence as we encode a word at a certain position.
 
 1. To produce output vector $y_i$, the self attention operation simply takes a weighted average over all the input vectors.
 $$y_i = \sum_j w_{ij} x_j$$
 
-1. Where j indexes over the whole sequence and the weights sum to one over all j. The weight $w_{ij}$ is not a parameter, as in a normal neural net, but it is derived from a function over $x_i$ and $x_j$ the simplest option for this function is the dot product:
+1. Where $j$ indexes over the whole sequence and the weights sum to one over all $j$. The weight $w_{ij}$ is not a parameter, as in a normal neural net, but it is derived from a function over $x_i$ and $x_j$ the simplest option for this function is the dot product:
     $$w′_{ij} = {x_i}^T x_j$$
 
 1.  Note that $x_i$ is the input vector at the same position as the current output vector $y_i$. For the next output vector, we get an entirely new series of dot products, and a different weighted sum.
 
-1.  The dot product gives us a value anywhere between negative and positive infinity, so we apply a softmax to map the values to [0,1] and to ensure that they sum to 1 over the whole sequence:
+1.  The dot product gives us a value anywhere between negative and positive infinity, so we apply a softmax to map the values to $[0,1]$ and to ensure that they sum to $1$ over the whole sequence:
 
 $$ w_{ij}=\frac{exp w′_{ij}}{\sum_j exp w′_{ij}}$$
 
@@ -69,7 +69,7 @@ Look at figure
 
 #### Example
 
-1.  To apply self-attention, we simply assign each word t in our vocabulary an embedding vector $x_t$ (the values of which we’ll learn). This is what’s known as an embedding layer in sequence modeling. It turns the word sequence the,cat,walks,on,the,street into the vector sequence $v_{the}$,$v_{cat}$, $v_{walks}$, $v_{on}$, $v_{the}$, $v_{street}$. Embedding the vector is again a different concept. Details are not required for now.
+1.  To apply self-attention, we simply assign each word $t$ in our vocabulary an embedding vector $x_t$ (the values of which we’ll learn). This is what’s known as an embedding layer in sequence modeling. It turns the word sequence the,cat,walks,on,the,street into the vector sequence $v_{the}$,$v_{cat}$, $v_{walks}$, $v_{on}$, $v_{the}$, $v_{street}$. Embedding the vector is again a different concept. Details are not required for now.
 
 1.  If we feed this sequence into a self-attention layer, the output is another sequence of vectors
 $y_{the}$,$y_{cat}$, $y_{walks}$, $y_{on}$, $y_{the}$, $y_{street}$
@@ -77,7 +77,7 @@ where $y_{cat}$ is a weighted sum over all the embedding vectors in the first se
 
 1.  Since we are learning what the values in $x_t$ should be, how "related" two words are is entirely determined by the task. In most cases, the definite article "the" is not very relevant to the interpretation of the other words in the sentence; therefore, we will likely end up with an embedding $v_{the}$ that has a low or negative dot product with all other words. 
 
-1.  On the other hand, to interpret what walks means in this sentence, it's very helpful to work out who is doing the walking. This is likely expressed by a noun, so for nouns like cat and verbs like walks, we will likely learn embeddings $v_{cat}$ and $v_{walks}$ that have a high, positive dot product together.
+1.  On the other hand, to interpret what "walks" means in this sentence, it's very helpful to work out who is doing the walking. This is likely expressed by a noun, so for nouns like "cat" and verbs like "walks", we will likely learn embeddings $v_{cat}$ and $v_{walks}$ that have a high, positive dot product together.
 
 1.  This is the basic intuition behind self-attention. The dot product expresses how related two vectors in the input sequence are, with “related” defined by the learning task, and the output vectors are weighted sums over the whole input sequence, with the weights determined by these dot products.
 
@@ -91,7 +91,7 @@ where $y_{cat}$ is a weighted sum over all the embedding vectors in the first se
 
     1. Value: Value vectors are actual word representations, once we’ve scored how relevant each word is, these are the values we add up to represent the current word.
     
-1. Notice that these new vectors are smaller in dimension than the embedding vector. Their dimensionality is 64, while the embedding and encoder input/output vectors have dimensionality of 512. They don’t HAVE to be smaller, this is an architecture choice to make the computation of multiheaded attention (mostly) constant.
+1. Notice that these new vectors are smaller in dimension than the embedding vector. Their dimensionality is $64$, while the embedding and encoder input/output vectors have dimensionality of $512$. They don’t HAVE to be smaller, this is an architecture choice to make the computation of multiheaded attention (mostly) constant.
 
 
 ### Computing Self Attention
@@ -102,15 +102,15 @@ To compute Query, Key and Value vectors.
 
 1.  The second step in calculating self-attention is to calculate a score. Say we’re calculating the self-attention for the first word in this example, “Thinking”. We need to score each word of the input sentence against this word. The score determines how much focus to place on other parts of the input sentence as we encode a word at a certain position.
 
- 1.  The score is calculated by taking the \textbf{dot product of the query vector with the key vector} of the respective word we’re scoring. So if we’re processing the self-attention for the word in position #1, the first score would be the dot product of q1 and k1. The second score would be the dot product of q1 and k2.
+ 1.  The score is calculated by taking the dot product of the query vector with the key vector of the respective word we’re scoring. So if we’re processing the self-attention for the word in position #1, the first score would be the dot product of $q1$ and $k1$. The second score would be the dot product of $q1$ and $k2$.
 
 #### Scaling the dot product
 
-1.  The softmax function can be sensitive to very large input values. These kill the gradient, and slow down learning, or cause it to stop altogether. Since the average value of the dot product grows with the embedding dimension k, it helps to scale the dot product back a little to stop the inputs to the softmax function from growing too large:
+1.  The softmax function can be sensitive to very large input values. These kill the gradient, and slow down learning, or cause it to stop altogether. Since the average value of the dot product grows with the embedding dimension $k$, it helps to scale the dot product back a little to stop the inputs to the softmax function from growing too large:
 
 $$ w′_{ij} = \frac{{q_i}^T k_j}{\sqrt{k}}$$
 
-1.  Why $\sqrt{k}$, Imagine a vector in $\Re^k$ with values all c. Its Euclidean length is $\sqrt{k}c$. Therefore, we are dividing out the amount by which the increase in dimension increases the length of the average vectors.
+1.  Why $\sqrt{k}$, Imagine a vector in $\Re^k$ with values all $c$. Its Euclidean length is $\sqrt{k}c$. Therefore, we are dividing out the amount by which the increase in dimension increases the length of the average vectors.
 
 #### Fourth Step
 
@@ -143,11 +143,37 @@ This improves the performance of the attention layer in two ways:
 
 ![MHAN](./Images/mhat.png)
 
+## Layer Normalization
+
+[Reference](https://leimao.github.io/blog/Layer-Normalization/)
+
+### Introduction
+
+Given inputs $x$ over a minibatch of size 
+$m$, $B=\{x_1,x_2,…,x_m\}$, each sample $x$
+$i$ contains $K$ elements, i.e. the length of flatten $x_i$ is $K$, by applying transformation of your inputs using some learned parameters $\gamma$ and $\beta$, the outputs could be expressed as $B = \{y_1,y_2,…,y_m\}$, where $y_i = LN_{\gamma,\beta}(x_i)$.
+
+More concretely, we first calculate the mean and the variance of of each sample from the minibatch. For sample $x_i$ whose flatten format is $\{x_{i,1},x_{i,2},…,x_{i,K}\}$, we have its mean $μ_i$ and variance $σ^2_i$. 
+ $$μ_i=\frac{1}{K} \sum_{k=1}^K x_{i,k}$$
+
+ $$σ^2_i = \frac{1}{K} \sum_{k=1}^K (x_{i,k}−μ_i)^2$$
+Then we normalize each sample such that the elements in the sample have zero mean and unit variance. $\epsilon$ is for numerical stability in case the denominator becomes zero by chance.
+$$\hat{x}_{i,k} = \frac{x_{i,k}-μ_i}{\sqrt{σ^2_i+ϵ}}$$
+
+Finally, there is a scaling and shifting step. 
+$\gamma$ and $\beta$ are learnable parameters.
+$$y_i = γ \hat{x_i} + β ≡ LN_{γ,β} (x_i)$$
+
+We can see from the math above that layer normalization has nothing to do with other samples in the batch.
+
+### Layer Normalization for convolutional Networks
+
+
 ## Positional Encoding
 
 1. This is a way to account for the order of the words in the input sequence. To this end, we add "positional encodings" to the input embeddings at the bottoms of the encoder and decoder stacks. 
 
-1. The positional encodings have the same dimension dmodel as the embeddings, so that the two can be summed.
+1. The positional encodings have the same dimension $dmodel$ as the embeddings, so that the two can be summed.
 
 1. There are many choices of positional encodings, learned and fixed. However, In this work, they used sine and cosine functions of different frequencies: $$PE(pos,2i) = sin(pos/10000^{2i}/dmodel)$$ $$PE(pos,2i+1) = cos(pos/10000^{2i}/dmodel)$$ where $pos$ is the position and $i$ is the dimension. 
 
@@ -169,9 +195,9 @@ This is the final architecture.
 
 **This is how the transformer model is used for neural machine translation task**. 
 
-# Applications 
 
 
 
 
 
+ 
