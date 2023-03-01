@@ -1,4 +1,2 @@
 # Object Detection and Segmentation
 
-
-
