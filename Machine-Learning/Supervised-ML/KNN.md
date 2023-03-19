@@ -6,11 +6,11 @@ Similar Inputs have similar outputs which imply that data points of various clas
 
 ## Classification rule
 
-For a test input $x$, assign the most common label amongst its $k$ most similar training inputs.
+For a test input $x$, assign the most common label amongst its $K$ most similar training inputs.
 
 ## What distance function should we use to find neighbors?
 
-The k-nearest neighbor classifier fundamentally relies on a distance metric. The better that metric reflects label similarity, the better the classified will be. 
+The $K$-nearest neighbor classifier fundamentally relies on a distance metric. The better that metric reflects label similarity, the better the classified will be. 
 
 1. Minkowski distance between two points $x$ and $x'$: $$D(x, x') = {(\sum_{i=1}^d {(x'_i - x_i)^p})}^\frac{1}{p}$$
 where $d$ represents the number of dimensions. The most common choice is the 
@@ -24,7 +24,7 @@ Generally, incase of classification of documents(bag of words), then it is bette
 
 **Note : We need to choose distance metric wisely based on our problem**
 
-## How to choose k
+## How to choose $K$
 
 1.  Generally we go for odd $K$. 
 1.  In case of multi class classification with four classes $C1, C2, C3, C4$ with distribution of (say $K = 7$) nearest neighbors $(3,3,1,0)$, If $C1$ and $C2$ have same number of neighbors, then we can check all its majority classes and assign that class which contains the closest point.  
@@ -44,9 +44,9 @@ Then the output of all test points will be same as major class in the given data
 
 1.  As the dimension $d$ of the input increases, the distance between two points in the space also increases. 
 1.  So as $d >> 0$ almost the entire space is needed to find the $10$-NN. 
-1.  This breaks down the KNN assumptions, because the $KNN are not particularly closer (and therefore more similar) than any other data points in the training set. Why would the test point share the label with those k-nearest neighbors, if they are not actually similar to it?
+1.  This breaks down the $KNN$ assumptions, because the $KNN$ are not particularly closer (and therefore more similar) than any other data points in the training set. Why would the test point share the label with those $K$-nearest neighbors, if they are not actually similar to it?
 1.  Dont try to visualize the above point as it involves multiple dimensions greater than three. Do the math.
-1.  Note : In real life, points are not uniformly distributed. Points mostly lie on the complex manifolds and may form clusters. That's why KNN may work sometimes even for higher dimensions. 
+1.  Note : In real life, points are not uniformly distributed. Points mostly lie on the complex manifolds and may form clusters. That's why $KNN$ may work sometimes even for higher dimensions. 
 
 ## Pros and Cons
 
@@ -59,9 +59,9 @@ Pros :
 Cons : 
 Computation time : $O(N.d)$ where $N$ -> #training samples and $d$ -> #dimensions.
 
-## K Dimensional Tress (KD Trees)
+## $K$ Dimensional Tress ($KD$ Trees)
 
-1.  Building KD trees. 
+1.  Building $KD$ trees. 
 
     1. Split data recursively in half on exactly one feature.
     1. Rotate through features.
@@ -69,9 +69,9 @@ Computation time : $O(N.d)$ where $N$ -> #training samples and $d$ -> #dimension
 
     Max height of the tree could be $log_2(n)$.
 
-1. Finding NN for the test point(X,y). 
+1. Finding NN for the test point $(x,y)$. 
 
-    1. Find region containing (x,y). 
+    1. Find region containing $(x,y)$. 
     1. Compare to all points in the region.
 
 1.  How can this partitioning speed up testing?
@@ -83,7 +83,7 @@ Computation time : $O(N.d)$ where $N$ -> #training samples and $d$ -> #dimension
 
 1.  Pros: Exact and  Easy to build.
 1.  Cons:
-    1.  Curse of Dimensionality makes KD-Trees ineffective for higher number of dimensions. May not work better if dimensions are greater than 10. 
+    1.  Curse of Dimensionality makes $KD$-Trees ineffective for higher number of dimensions. May not work better if dimensions are greater than $10$. 
     1.  All splits are axis aligned (all dividing hyperplanes are parallel to axis).
 
 1.  Approximation: Limit search to $m$ leafs only. 
@@ -106,7 +106,7 @@ Computation time : $O(N.d)$ where $N$ -> #training samples and $d$ -> #dimension
 
 ## Locally sensitive hashing (LSH) 
     
-1. Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing k hyperplanes $(h_1, h_2, h_3, .........,h_k)$. 
+1. Divide the whole space of points into $\frac{n}{2^k}$ regions by randomly drawing $k$ hyperplanes $(h_1, h_2, h_3, .........,h_k)$. 
 1. Compare $x$ to only those $\frac{n}{2^k}$ points in that particular region. 
 1. Complexity : $O(Kd +  d \frac{n}{2^k})$. 
     1. $Kd$ : To find out which point belongs to which region. For that we need to check with each hyperplane and find that. 

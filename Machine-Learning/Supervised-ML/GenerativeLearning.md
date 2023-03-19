@@ -13,8 +13,10 @@ or algorithms that try to learn mappings directly from the space of inputs $X$ t
 1.  In this model, we’ll assume that $P(x|y)$ is distributed according to a multivariate normal distribution.
 
 1.  This Algorithm make use of Bayes theorem to model $P(y|x)$. 
-    $$ p(x; \mu, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu))$$ 
-    Here, $\Sigma$ = Covariance of X. 
+    
+    $$ p(x; \mu, \Sigma) = \sqrt{\frac{1}{{(2 \pi)}^n det(\Sigma)}} exp(-\frac{1}{2}(x-\mu^T\Sigma^{-1}(x-\mu))$$ 
+
+    Here, $\Sigma$ = Covariance of $X$. 
     Here, $\mu$ and $\Sigma$ is computed for each class inputs separately.
     $$y \approx Bernoulli(\phi)$$ 
 
@@ -28,19 +30,19 @@ or algorithms that try to learn mappings directly from the space of inputs $X$ t
 
 1. The log-likelihood of the data is given
 by 
-    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i), y(i); \phi, \mu_0, \mu_1, \Sigma_0, \Sigma_1)$$
+    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log \prod_{i=1}^m p(x(i), y(i); \phi, \mu_0, \mu_1, \Sigma_0, \Sigma_1)$$
 
-    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log {\prod^m}_{i=1} p(x(i)| y(i); \phi, \mu_0, \mu_1, \Sigma_0,\Sigma_1)\times p(y(i);\phi)$$ 
+    $$l(\phi, \mu_0, \mu_1,\Sigma_0, \Sigma_1) = log \prod_{i=1}^m p(x(i)| y(i); \phi, \mu_0, \mu_1, \Sigma_0,\Sigma_1)\times p(y(i);\phi)$$ 
     
     By maximizing $l$ with respect to the parameters, we find the maximum likelihood estimate of the parameters (see problem set $1$) to be:
 
-    $$\phi =\frac{1}{m}\sum_{i=1}^m 1\{y(i) = 1\}$$
+    $$\phi =\frac{1}{m} \sum_{i=1}^m 1\{y(i) = 1\}$$
 
-    $$\mu_0 = \frac{\sum^m_{i=1} 1\{y(i) = 0\} x(i)}{\sum^m_{i=1} 1\{y(i) = 0\}}$$
+    $$\mu_0 = \frac{ \sum_{i=1}^m 1\{y(i) = 0\} x(i)}{ \sum_{i=1}^m 1\{y(i) = 0\}}$$
 
-    $$\mu_1 = \frac{\sum^m_{i=1} 1\{y(i) = 1\}x(i)}{\sum^m_{i=1} 1\{y(i) = 1\}}$$
+    $$\mu_1 = \frac{\sum_{i=1}^m 1\{y(i) = 1\}x(i)}{\sum_{i=1}^m 1\{y(i) = 1\}}$$
 
-$$\Sigma_{y^(i)} = \frac{1}{m} \sum^m_{i=1} (x(i) - \mu_{y^(i)})(x(i) - \mu_{y^(i)})^T $$
+    $$\Sigma_{y^(i)} = \frac{1}{m} \sum_{i=1}^m(x(i) - \mu_{y^(i)})(x(i) - \mu_{y^(i)})^T $$
 
 1. **GDA vs Logistic Regression** : 
 GDA works best if $X$ distribution is multivariate. But Logistic Regression works best even for other distributions also. 
